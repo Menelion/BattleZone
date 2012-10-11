@@ -1,0 +1,32 @@
+void learngamesounds() {
+learn_game_sounds lgs;
+lgs.speak_values=false;
+lgs.allow_escape=true;
+lgs.wrap=true;
+lgs.add_item("Item","sounds/item.wav");
+lgs.add_item("item falls","sounds/break.wav");
+lgs.add_item("You collected ammo","sounds/ammo.wav");
+lgs.add_item("You collected potion","sounds/storepotion.wav");
+lgs.add_item("You collected armor","sounds/grabarmor.ogg");
+lgs.add_item("you collected evade blades item","sounds/evadeGet.wav");
+lgs.add_item("Ahwhwhwhwhwhwhwhwhwh, you got a fake item, too bad!","sounds/fake.wav");
+lgs.add_item("Pit","sounds/pit.wav");
+lgs.add_item("Enemy jumps over a pit","sounds/enemy/jump.wav");
+lgs.add_item("enemy falls into a pit","sounds/enemy/diepit1.sound");
+lgs.add_item("booby trap","sounds/booby.wav");
+lgs.add_item("Enemy accidentally stepped onto a booby trap and just died!","sounds/enemytrap.wav");
+lgs.add_item("you accidentally step on to your own booby trap and go boom!","sounds/oopsy.wav");
+lgs.add_item("blades","sounds/blades.wav");
+lgs.add_item("blades cut you","sounds/dieknife.ogg");
+lgs.add_item("you are protected from blades","sounds/bladevade.wav");
+lgs.add_item("blades protection dstroyed","sounds/bladeoff.wav");
+lgs.add_item("boulder","sounds/rock.wav");
+lgs.add_item("boulder hits enemy","sounds/enemy/boulderHit.wav");
+lgs.add_item("boulder hits you","sounds/boulderHit.wav");
+lgs.add_item("Enemy attack completely absorbed by armor","sounds/enemy/hitarmor/1.ogg");
+lgs.add_item("Fireball","sounds/fireBall.wav");
+lgs.add_item("Fireball hits you","sounds/firehit.wav");
+lgs.add_item("you are injured","sounds/coughing.wav");
+lgs.add_item("end of level","sounds/endoflevel.wav");
+lgs.run("Use up and down arrow keys to navigate, and press enter to select.");
+}

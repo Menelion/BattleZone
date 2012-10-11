@@ -1,0 +1,45 @@
+double pointmult; //multiplier for all points gained
+int swordrange; //range of sword
+double enemhp; //enemy's health, which will be multiplied
+double bladetime; //time between blades cutting, is subtracted;
+double enemspd; //enemy speed division
+double enemdam; //enemy damage multiplier.
+void initDiffs() {
+switch(gameDiff) {
+case 1:
+pointmult=1;
+itemtime=24;
+swordrange=2;
+enemdam=0.9;
+bladetime=0;
+enemhp=1;
+enemspd=1;
+break;
+case 2:
+pointmult=1.2;
+itemtime=18;
+swordrange=2;
+enemdam=1;
+bladetime=150;
+enemhp=1.4;
+enemspd=1.5;
+break;
+case 3:
+pointmult=1.4;
+itemtime=13;
+swordrange=2;
+enemdam=1.2;
+bladetime=250;
+enemhp=2;
+enemspd=2;
+break;
+case 4:
+pointmult=1.6;
+itemtime=9;
+swordrange=1;
+enemdam=1.5;
+bladetime=345;
+enemhp=2.6;
+enemspd=2.4;
+break;
+}}
