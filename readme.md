@@ -1,8 +1,8 @@
 ##A BattleZone by GameMadnessInteractive fork##
 
-This is a fork of a game for blind and visually impaired written in [Blastbay Gaming Toolkit](http://blastbay.com/) scripting language.
-**Note**: There's no graphics, only sound!
-the original version as well as the discussion of the game can be found [here](http://forum.audiogames.net/viewtopic.php?id=3800&p=52].
+This is a fork of a game for blind and visually impaired written in [Blastbay Gaming Toolkit](http://blastbay.com/) scripting language.    
+**Note**: There's no graphics, only sound!    
+the original version as well as the discussion of the game can be found [here](http://forum.audiogames.net/viewtopic.php?id=3800&p=52).    
 You can find out how to play the game by reading *user guide.txt* file.
 
 ##Changes made by Menelion Elensúle:##
