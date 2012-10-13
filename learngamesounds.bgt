@@ -18,8 +18,7 @@ lgs.add_item("Enemy accidentally stepped onto a booby trap and just died!","soun
 lgs.add_item("you accidentally step on to your own booby trap and go boom!","sounds/oopsy.wav");
 lgs.add_item("blades","sounds/blades.wav");
 lgs.add_item("blades cut you","sounds/dieknife.ogg");
-lgs.add_item("you are protected from blades","sounds/bladevade.wav");
-lgs.add_item("blades protection dstroyed","sounds/bladeoff.wav");
+lgs.add_item("blades protection destroyed","sounds/bladeoff.wav");
 lgs.add_item("boulder","sounds/rock.wav");
 lgs.add_item("boulder hits enemy","sounds/enemy/boulderHit.wav");
 lgs.add_item("boulder hits you","sounds/boulderHit.wav");

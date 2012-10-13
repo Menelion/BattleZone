@@ -10,7 +10,7 @@
 sound_pool sounds(125);
 const ushort weapon_sword=1, weapon_fist=2, weapon_gun=3, weapon_whip=4;
 const ushort f=2, m=1;
-int playerposition=1, playerhealth=250, levelendposition=100, level=1, numberofpits=2, levelenemies=0, beatengame=14, using, ammo=5, gunrange=8, moveinterval, potions, playerpoints, numberofblades=1, boobyposition=-1, boobies, boulders, timebonuspoints, musictype=7, levelpoints=0, totalpoints=0, lives=3, temp_volume, fireballs=3, bombs=0, evades=0, whichsword=4, enemygender=3, itemtime=24, polices=4, ambslot;
+int playerposition=1, playerhealth=250, levelendposition=100, level=1, numberofpits=2, levelenemies=0, beatengame=14, using, ammo=5, gunrange=8, moveinterval, potions, playerpoints, numberofblades=1, boobyposition=-1, boobies, boulders, timebonuspoints, musictype=7, levelpoints=0, totalpoints=0, lives=3, temp_volume, fireballs=3, evades=0, whichsword=4, enemygender=3, itemtime=24, polices=4, ambslot;
 double armor=0;
 int gameDiff=0;
 file readme, cheatfile, optfile, savefile;
@@ -18,7 +18,7 @@ int[] teleportpositions();
 bool jumping=false, isItemFalling=false, avoiding=false, isUsingLaptop=false, ducked, stopall=false, enemytaunt=true, iveplayedalready, reality=false, iveheardtheconv=false;
 //level and cheat bools
 bool l13switch=false, charmor=false, chavoid=false, chitems=false;
-sound shoot, iamdead, pitdie, jump, youmadeit, itemsound, itembreak, storepotion, healing, loadgun, music, dieblades, boobysound, enemytrap, levelend, bossconversation, bgrunt, cheatactivated, armorgrab, machinegun, intro, godown, goup, bombfire, evader, breakblade, sword2, sword3, cough, fake, oops, playershot;
+sound shoot, iamdead, pitdie, jump, youmadeit, itemsound, itembreak, storepotion, healing, loadgun, music, dieblades, boobysound, enemytrap, levelend, bossconversation, bgrunt, cheatactivated, armorgrab, machinegun, intro, godown, goup, evader, breakblade, sword2, sword3, cough, fake, oops, playershot;
 sound[] step();
 timer intheair, movetimer, itemfalling, changer, duration, leveltimer, machineguntimer, ducktimer;
 tts_voice voice;
@@ -447,7 +447,6 @@ sword3.load("sounds/sword3.wav");
 cheatactivated.load("sounds/hit.wav");
 oops.load("sounds/oopsy.wav");
 fake.load("sounds/fake.wav");
-bombfire.load("sounds/bomb.ogg");
 godown.load("sounds/duck.wav");
 goup.load("sounds/unduck.wav");
 iamdead.load("sounds/idead.wav");
@@ -570,7 +569,6 @@ if(playerposition<=police[x].pos-25&&playerposition>police[x].pos+25) {police[x]
 if(key_down(KEY_LMENU)&&key_pressed(KEY_S)) savegame();
 
 if(key_down(KEY_LSHIFT)&&key_down(KEY_RMENU)&&key_pressed(KEY_SPACE)) autopilotStart();
-if(key_pressed(KEY_M)) voice.speak_interrupt(bombs+" bombs");
 if(key_pressed(KEY_F8)) pause();
 if(key_pressed(KEY_END)||key_pressed(KEY_NUMPAD3)) sounds.items[ambslot].handle.volume=sounds.items[ambslot].handle.volume-2;
 if(key_pressed(KEY_HOME)||key_pressed(KEY_NUMPAD9)) sounds.items[ambslot].handle.volume=sounds.items[ambslot].handle.volume+2;
@@ -860,26 +858,6 @@ levelDesc();
 initAfterLevels();
 }}
 if(level!=5) {
-if(using==5) {if(bombs>0) {bombfire.stop();
-bombfire.play();
-bombfire.volume=-11;
-bombs--;
-int x=0;
-while(x<20) {
-int r=random(0,enemy.length()-1);
-position_sound_1d(enemy[r].diesound,playerposition,enemy[x].pos,4,0);
-if(!enemy[r].isDead) {
-enemy[r].diesound.play();
-enemy[r].pos=-5555;
-x++;
-}
-if(enemy[r].isDead) {}
-}
-wait(3000);
-}
-if(bombs<=0) {using=1;
-voice.speak_interrupt("no more bombs; using sword");
-}}
 if(using==1) {
 if(whichsword>=1&&whichsword<=3) sounds.play_stationary("sounds/sword"+whichsword+".wav",false);
 if(whichsword==4) {sounds.play_stationary("sounds/sword"+random(1,3)+".wav",false);
@@ -1323,7 +1301,7 @@ case 3:
 voice.speak_wait("The water of death");
 break;
 case 4:
-voice.speak_wait("Street knowhow");
+voice.speak_wait("Street know how");
 break;
 case 6:
 voice.speak_wait("Forest excursions");
@@ -1419,7 +1397,6 @@ if(result==3) {ammo+=30*buy;loadgun.play();}
 if(result==4) boobies+=5*buy;}
 if(result==5) armor+=buy;
 if(result==6) evades+=buy;
-if(result==7) bombs+=buy;
 return;
 }
 if(key_pressed(KEY_N)) return;
@@ -1471,7 +1448,6 @@ if(key_pressed(KEY_SPACE)) {voice.stop();break;}
 }}
 if(key_pressed(KEY_T)) voice.speak_interrupt(number_to_words(totalpoints+levelpoints, true)+" points");
 if(key_pressed(KEY_A)) voice.speak_interrupt(ammo+" ammo");
-if(key_pressed(KEY_M)) voice.speak(bombs+"bombs");
 if(key_pressed(KEY_B)) voice.speak_interrupt(boobies+" traps");
 if(key_down(KEY_LCONTROL)&&key_pressed(KEY_P)) voice.speak_interrupt(potions+" potions");
 if(key_pressed(KEY_H)) voice.speak_interrupt("health "+playerhealth+", armor "+armor);
@@ -1528,7 +1504,7 @@ void savegame() {
 file enemyfile;
 enemyfile.open("enemysave.sav","w");
 savefile.open("savefile.sav","w");
-string writer=level+" "+evades+" "+potions+" "+ammo+" "+levelenemies+" "+numberofpits+" "+playerposition+" "+numberofblades+" "+boobies+" "+lives+" "+playerhealth+" "+bombs+" "+using+" "+gameDiff+" "+totalpoints+" "+levelpoints+" "+armor+" ";
+string writer=level+" "+evades+" "+potions+" "+ammo+" "+levelenemies+" "+numberofpits+" "+playerposition+" "+numberofblades+" "+boobies+" "+lives+" "+playerhealth+" "+using+" "+gameDiff+" "+totalpoints+" "+levelpoints+" "+armor+" ";
 if(charmor) writer+="1 ";
 if(!charmor) writer+="0 ";
 if(avoiding) writer+="1 ";
@@ -1557,7 +1533,6 @@ evades=string_to_number(output[1]);
 lives=string_to_number(output[9]);
 playerhealth=string_to_number(output[10]);
 boobies=string_to_number(output[8]);
-bombs=string_to_number(output[11]);
 using=string_to_number(output[12]);
 gameDiff=string_to_number(output[13]);
 totalpoints=string_to_number(output[14]);
