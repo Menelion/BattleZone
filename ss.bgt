@@ -714,7 +714,10 @@ if((key_down(KEY_NEXT)||key_down(KEY_NUMPAD3))&&music.volume>=-65) {music.volume
 wait(25);}
 if(key_pressed(KEY_1)) weapon(1);
 if(key_pressed(KEY_S)) voice.speak_interrupt(levelpoints+"points");
-if(key_pressed(KEY_T)) voice.speak_interrupt(number_to_words(totalpoints+levelpoints,false)+" points");
+if(key_pressed(KEY_T)) {
+int allpoints=totalpoints+levelpoints;
+voice.speak_interrupt(allpoints+" points");
+}
 if(key_down(KEY_LCONTROL)&&key_pressed(KEY_P)) voice.speak_interrupt(potions+" potions");
 if(key_pressed(KEY_RSHIFT)) {
 if(moveinterval==400) {voice.speak_interrupt("running");
