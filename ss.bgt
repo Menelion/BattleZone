@@ -1252,7 +1252,7 @@ if(potions>0) {
 potions--;
 healing.stop();
 healing.play();
-playerhealth+=random(50,100);
+playerhealth+=random(70,120);
 if(playerhealth>80) moveinterval=275;
 }}
 void dieStopSounds() {

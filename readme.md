@@ -1,4 +1,4 @@
-##A BattleZone by GameMadnessInteractive fork##
+﻿##A BattleZone by GameMadnessInteractive fork##
 
 This is a fork of a game for blind and visually impaired written in [Blastbay Gaming Toolkit](http://blastbay.com/) scripting language.    
 **Note**: There's no graphics, only sound!    
@@ -15,6 +15,7 @@ You can find out how to play the game by reading *user guide.txt* file.
 - Cheats: F4+Enter gives you _extra_ 250 lives, not just 250
 - Cheats: Del+Z gives you _extra_ 250 armor, not just 250
 - New cheat: press Ctrl+Shift+I, and every item gets caught automatically for you (needs to be in cheats.txt)
+- A potion now gives more health (between 70 and 120, not between 50 and 100)
 
 ##Plans for future:##
 - SHOP: Allow items selling, not only buying. When being sold, items cost half their original price
