@@ -1,15 +1,15 @@
-﻿##A BattleZone by GameMadnessInteractive fork##
+##A BattleZone by GameMadnessInteractive fork##
 
 This is a fork of a game for blind and visually impaired written in [Blastbay Gaming Toolkit](http://blastbay.com/) scripting language.    
 **Note**: There's no graphics, only sound!    
 the original version as well as the discussion of the game can be found [here](http://forum.audiogames.net/viewtopic.php?id=3800&p=52).    
 You can find out how to play the game by reading *user guide.txt* file.
 
-##Changes made by Menelion Elensúle:##
+##Changes made by Menelion Elensúlë:##
 - Removed the *maxarmor* restriction — no useless armor anymore!
 - Removed the annoying evading blades sound — use the V key more frequently instead
 - Removed annoying life loss messages
-- Removed bombs — they were quite instable (code cleaning in progress)
+- Removed bombs — they were quite instable
 - Now each ammo pack that you can buy contains 30 ammo, not 10 — I think it's more realistic to pay 30 points per gunshot
 - Now when you get an evade blades, nothing is said — the sound is enough
 - Cheats: F4+Enter gives you _extra_ 250 lives, not just 250
