@@ -3,6 +3,7 @@
 This is a fork of a game for blind and visually impaired written in [Blastbay Gaming Toolkit](http://blastbay.com/) scripting language.    
 **Note**: There's no graphics, only sound!    
 the original version as well as the discussion of the game can be found [here](http://forum.audiogames.net/viewtopic.php?id=3800&p=52).    
+Copyright © the original code and sounds were developed by [http://twitter.com/KeyWasFull](Carlos Macintosh).
 You can find out how to play the game by reading *user guide.txt* file.
 
 ##Changes made by Menelion Elensúlë:##
@@ -23,3 +24,8 @@ You can find out how to play the game by reading *user guide.txt* file.
 - Code optimizing and cleaning
 - Iplement update manager from 13.4 branch or develop an alternative one
 - Allow armor protection from boulders
+- Maybe make a Russian branch or a bilingual interface
+- Provide a hints.txt file after gaining 50000 points
+
+##Known issues:##
+- Level 5 is not working: to beat a boss, just press Spacebar. That was so before my intrusion, and for now I don't know how to solve this. Pull requests are welcome.
