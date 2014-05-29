@@ -15,14 +15,14 @@ h2. Changes made by Menelion Elensúlë:
 * Now when you get an evade blades, nothing is said — the sound is enough
 * Cheats: _F4+Enter_ gives you extra 250 lives, not just 250
 * Cheats: _Del+Z_ gives you extra 250 armor, not just 250
-* New cheat: press _Ctrl+Shift+I_, and every item gets caught automatically for you (needs to be in cheats.txt)
+* New cheat: press _Ctrl+Shift+I_, and every item gets caught automatically for you
 * A potion now gives more health (between 70 and 120, not between 50 and 100)
 
 h2. Plans for future:
 * SHOP: Allow items selling, not only buying. When being sold, items cost half their original price
 * ITEMS: Change all voice messages to sounds for extra points, lives, boobies etc.
 * Code optimizing and cleaning
-* Iplement update manager from 13.4 branch or develop an alternative one
+* Implement update manager from 13.4 branch or develop an alternative one
 * Allow armor protection from boulders (you will need really lots of armor for this, and you'll lose lots of armor when hit by a boulder)
 * Maybe make a Russian branch or a bilingual interface
 * Provide a hints.txt file after gaining 50000 points
