@@ -6,7 +6,7 @@ the original version as well as the discussion of the game can be found "here":h
 Copyright В© the original code and sounds were developed by "Carlos Macintosh":http://twitter.com/KeyWasFull.
 You can find out how to play the game by reading _user guide.txt_ file.
 
-h2. 2020
+h2. Changes made by Brogar2000 on 04/16/2020
 * Made a data folder and moved a few files to it. Hopefully I can move more files over to it at a later date.
 * Renamed ss.bgt to game.bgt.
 * The level 5 boss works propperly now. I did not make any changes to fix this blitch, it seems to have fixed itself.
@@ -18,6 +18,7 @@ h2. 2020
 * Battle Zone now has support for multiple languages. To make a new language, go into the languages folder. You can use the English file as a template. Remember not to add a file extention to your language file, or else the game will read out .txt at the end of the language name.
 * New language: Spanish, (Google Translated).
 * Readded enter sounds for the menus.
+
 h2. Changes made by Menelion Elensúlë:
 * Removed the @maxarmor@ restriction — no useless armor anymore!
 * Removed the annoying evading blades sound — use the _V_ key more frequently instead
