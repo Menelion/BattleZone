@@ -19,6 +19,13 @@ h2. Changes made by Brogar2000 on 04/16/2020
 * New language: Spanish, (Google Translated).
 * Readded enter sounds for the menus.
 
+h3. Plans for future:
+* Hopefully we can improve the language system. While it works, it has some major flaws.
+
+h3. Known issues:
+* When generating the cheats.txt file, there are no line breaks. I had to put tabs instead. This is do to how the language system works, so unfortunately nothing can be done about it at the moment.
+* There's a little sound glitch where you hear certain bits of sound right before a level starts. This glitch does not happen all the time, and  it can be mostly noticed when using the next level cheat or beating the first boss and going to the next level. I'm not sure how this happens, so I can't find a way to fix it.
+
 h2. Changes made by Menelion Elensúlë:
 * Removed the @maxarmor@ restriction — no useless armor anymore!
 * Removed the annoying evading blades sound — use the _V_ key more frequently instead
@@ -31,7 +38,7 @@ h2. Changes made by Menelion Elensúlë:
 * New cheat: press _Ctrl+Shift+I_, and every item gets caught automatically for you
 * A potion now gives more health (between 70 and 120, not between 50 and 100)
 
-h2. Plans for future:
+h3. Plans for future:
 * SHOP: Allow items selling, not only buying. When being sold, items cost half their original price
 * ITEMS: Change all voice messages to sounds for extra points, lives, boobies etc.
 * Code optimizing and cleaning
@@ -40,5 +47,5 @@ h2. Plans for future:
 * Maybe make a Russian branch or a bilingual interface
 * Provide a hints.txt file after gaining 50000 points
 
-h2. Known issues:
+h3. Known issues:
 * Level 5 is not working: to beat a boss, just press Spacebar. That was so before my intrusion, and for now I don't know how to solve this. Pull requests are welcome.
