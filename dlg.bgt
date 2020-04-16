@@ -1,0 +1,39 @@
+void dlg(string message)
+{
+speak(message);
+while(true)
+{
+if (key_pressed(KEY_LEFT) or key_pressed(KEY_RIGHT) or key_pressed(KEY_UP) or key_pressed(KEY_DOWN))
+{
+speak(message);
+}
+if (key_pressed(KEY_RETURN) or key_pressed(KEY_ESCAPE))
+{
+break;
+}
+wait(5);
+}
+}
+void dlgplay(string dlgsound, bool enableenter=true, bool fade=false, int fadetime=40)
+{
+sound dlgaudio;
+dlgaudio.load(dlgsound);
+dlgaudio.play();
+while(dlgaudio.playing)
+{
+wait(5);
+if(key_pressed(KEY_RETURN) and enableenter==true)
+{
+if (fade==true)
+{
+while (dlgaudio.volume>=-40)
+{
+dlgaudio.volume=dlgaudio.volume-2;
+wait(fadetime);
+}
+}
+dlgaudio.stop();
+break;
+}
+}
+}

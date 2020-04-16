@@ -76,8 +76,8 @@ if(key_down(KEY_LCONTROL)&&key_pressed(KEY_F9)) {
 music.stop();
 level++;initAfterLevels();}
 if(level==11) {keys();break;}
-if(key_pressed(KEY_H)) voice.speak_interrupt("health: "+playerhealth);
-if(key_pressed(KEY_A)) voice.speak_interrupt("ammo: "+ammo);
+if(key_pressed(KEY_H)) speak(voice[49]+playerhealth +voice[50]+armor);
+if(key_pressed(KEY_A)) speak(ammo+voice[51]);
 if(playerhealth<=0) {
 for(uint x=0; x<boss_fireball.length(); x++) {
 boss_fireball[x].speed=random(350,400);
@@ -131,8 +131,8 @@ if(key_down(KEY_DOWN)) {ducked=true;
 godown.stop();
 godown.play();
 while(true) {
-if(key_pressed(KEY_H)) voice.speak_interrupt("health: "+playerhealth);
-if(key_pressed(KEY_A)) voice.speak_interrupt("ammo: "+ammo);
+if(key_pressed(KEY_H)) speak(voice[49]+playerhealth +voice[50]+armor);
+if(key_pressed(KEY_A)) speak(ammo+voice[51]);
 fboss.throw_fireball();
 for(uint x=0; x<boss_fireball.length(); x++) {
 boss_fireball[x].moveControl(1);
@@ -173,9 +173,9 @@ fboss.pain.play();
 fboss.fireball_interval-=750;
 fboss.retreat();
 if(fboss.health<=0) {fboss.die();
-voice.speak_interrupt_wait("The boss is dead! You have now gained 7000 points!");
+dlgscroll.play();dlg(voice[108]);
 totalpoints+=7000;
-voice.speak_interrupt_wait("Your total score is:"+totalpoints);
+dlgscroll.play();dlg(voice[109]+totalpoints);
 boss_fireball.resize(0);
 level=11;
 playerposition=0;
@@ -184,7 +184,7 @@ boulders=10;
 levelenemies=55;
 fireballs=9;
 
-voice.speak_wait("level 11,");
+dlgscroll.play();dlg(voice[62]);
 levelDesc();
 music.stop();
 initAfterLevels();

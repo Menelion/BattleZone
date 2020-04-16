@@ -1,0 +1,1592 @@
+#include "data/dlg.bgt"
+#include "data/speech.bgt"
+#include "data/language_manager.bgt"
+#include "data/autopilot.bgt"
+#include "data/diffstuff.bgt"
+#include "data/lgs.bgt"
+#include "sound_pool.bgt"
+#include "data/bossfights.bgt"
+#include "data/classes.bgt"
+#include "data/learngamesounds.bgt"
+#include "sound_positioning.bgt"
+#include "data/m_pro.bgt"
+sound_pool sounds(125);
+const ushort weapon_sword=1, weapon_fist=2, weapon_gun=3, weapon_whip=4;
+const ushort f=2, m=1;
+int playerposition=1, playerhealth=250, levelendposition=100, level=1, numberofpits=2, levelenemies=0, beatengame=14, using, ammo=5, gunrange=8, moveinterval, potions, playerpoints, numberofblades=1, boobyposition=-1, boobies, boulders, timebonuspoints, musictype=7, levelpoints=0, totalpoints=0, lives=3, temp_volume, fireballs=3, evades=0, whichsword=4, enemygender=3, itemtime=24, polices=4, ambslot;
+double armor=0;
+int gameDiff=0;
+file readme, cheatfile, optfile, savefile;
+int[] teleportpositions();
+bool jumping=false, isItemFalling=false, avoiding=false, isUsingLaptop=false, ducked, stopall=false, enemytaunt=true, iveplayedalready, reality=false, iveheardtheconv=false;
+//level and cheat bools
+bool l13switch=false, charmor=false, chavoid=false, chitems=false;
+sound dlgscroll, dlgend, shoot, jump, itemsound, itembreak, storepotion, healing, loadgun, music, boobysound, enemytrap, levelend, bossconversation, bgrunt, cheatactivated, armorgrab, machinegun, godown, goup, evader, breakblade, sword2, sword3, cough, fake, playershot;
+sound[] step();
+timer intheair, movetimer, itemfalling, changer, duration, leveltimer, machineguntimer, ducktimer;
+//musicpath="data/music.ini";
+DFSpeech s;
+movable_hazard[] boulder();
+enem[] enemy();
+enem boss(344,33*enemdam,80,45*enemhp,"sounds/bossvoice.wav");
+neuter[] police;
+movable_hazard[] fireball();
+hazard[] pit(numberofpits);
+hazard[] blades(numberofblades);
+void initAfterLevels() {
+initDiffs();
+string levelext;
+if(level==12) levelext=".ogg";
+else levelext=".wav";
+boss=enem(344,33*enemdam,80,45*enemhp,"sounds/bossvoice.wav");
+moveinterval=264;
+sounds.destroy_all();
+if(level>=beatengame) {
+dlgscroll.play();dlg(voice[2]+totalpoints+voice[3]);dlgend.play();
+menu();
+}
+police.resize(0);
+dieStopSounds();
+if(level>=12) {
+police.resize(polices);
+for(uint x=0; x<police.length(); x++) {
+police[x].pos=random(10,levelendposition-10);
+police[x].weaponrange=random(2,4);
+police[x].voice.load("sounds/police/voice"+random(1,find_files('sounds/police/voice*.*').length())+".wav");
+police[x].speed=random(250,500);
+positions();
+police[x].voice.pitch=random(95,103);
+police[x].voice.play_looped();
+police[x].patrollength=random(4,8);
+police[x].midpatrol=police[x].pos;
+}}
+if(level==10) {
+pit.resize(0);
+enemy.resize(0);
+fireball.resize(0);
+blades.resize(0);
+boss2fight();
+return;
+}
+if(level!=5) temp_volume=music.volume;
+levelpoints=0;
+if(musictype==7&&level!=5) music.load("sounds/music"+random(1,6)+".ogg");music.play_looped();music.volume=temp_volume;
+timebonuspoints=300+15*level;
+step.resize(0);
+bool isLoading=true;
+int w=1;
+while(isLoading) {
+if(file_exists("sounds/step/lvl"+level+"/"+w+levelext)) {
+step.resize(step.length()+1);
+step[step.length()-1].load("sounds/step/lvl"+level+"/"+w+levelext);
+w++;
+}
+else isLoading=false;
+}
+if(level==1) boulder.resize(0);
+if(level==8) fireballs=3;fireball.resize(3);
+if(level>8) fireball.resize(fireballs);
+if(level>=2) boulder.resize(boulders);
+if(level>=8) {
+for(uint x=0; x<fireball.length(); x++) {
+fireball[x].hitplayer.load("sounds/firehit.wav");
+fireball[x].pos=random(23,levelendposition-20);
+fireball[x].shouldPlayStep=false;
+fireball[x].canBeDamaged=false;
+fireball[x].speed=random(200,350)/enemspd;
+fireball[x].strength=70;
+fireball[x].abovePlayer=true;
+fireball[x].voice.load("sounds/fireBall.wav");
+fireball[x].voice.pitch=random(97,105);
+fireball[x].voice.play_looped();
+positions();
+}}
+for(uint x=0; x<boulder.length(); x++) {
+boulder[x].shouldPlayStep=false;
+boulder[x].canBeDamaged=false;
+if(level==2||level==4) {
+boulder[x].voice.load("sounds/moto"+random(1,2)+".wav");
+boulder[x].voice.pitch=random(95,104);
+boulder[x].voice.play_looped();
+boulder[x].fire.load("sounds/motocrash.wav");
+}
+else {
+boulder[x].voice.load("sounds/rock.wav");
+boulder[x].voice.pitch=random(96,105);
+boulder[x].voice.play_looped();
+boulder[x].fire.load("sounds/boulderHit.wav");
+}
+boulder[x].speed=random(600,900);
+boulder[x].speed-=(random(30,47)*(level-2));
+boulder[x].speed/=enemspd;
+boulder[x].pos=random(30,levelendposition-5);
+boulder[x].strength=200;
+}
+enemy.resize(levelenemies);
+blades.resize(numberofblades);
+pit.resize(numberofpits);
+if(level==5) {
+dieStopSounds();
+enemy.resize(0);
+levelend.stop();
+boss.fire.load("sounds/gun.wav");
+if(!boss.fire.active) alert("error!","couldn't find the boss fire file");
+if(!iveheardtheconv) {
+while(true) {if(music.active) music.volume=music.volume-0.25;
+if(music.volume<-50) break;
+if(!music.active) break;
+wait(40);
+}
+sound bosssound;
+sound boss2;
+dlgplay("sounds/converse.ogg",true,true);
+dlgplay("sounds/boss.wav",true,false);
+}
+if(musictype!=8) music.load("sounds/bossmusic.ogg");
+music.volume=0;
+music.play_looped();
+pit.resize(0);
+blades.resize(0);
+boss.shouldPlayStep=false;
+boss.slotvoice=sounds.play_1d("sounds/bossvoice.wav",playerposition,boss.pos,true);
+}
+if(level>6) teleportpositions.resize(teleportpositions.length()+2);
+if(level==6) {music.stop();
+boss.die();
+teleportpositions.resize(3);
+positions();
+levelenemies=35;
+levelendposition=225;
+numberofblades=5;
+boulders=5;
+numberofpits=3;
+positions();
+levelend.play_looped();
+if(musictype!=7) music.load("sounds/music"+musictype+".ogg");
+music.play_looped();
+music.volume=temp_volume;
+}
+if(teleportpositions.length()>0) {
+for(uint x=0; x<teleportpositions.length(); x++) {
+int r=random(3,levelendposition-2);
+teleportpositions[x]=r;
+}}
+if(level!=5) pit[0].reset(random(4,15),true, true, "sounds/pit.wav");
+for(uint x=1; x<pit.length(); x++) {
+pit[x].reset(pit[x-1].position+random(11,levelendposition/numberofpits),true, true, "sounds/pit.wav");
+pit[x].whereitis.pitch=random(95,104);
+if(!pit[x].whereitis.active) alert("not found","not found pit "+x);
+positions();
+if(pit[x].position>levelendposition) pit[x].position=random(94,99);
+}
+for(uint y=0; y<blades.length(); y++) {
+blades[y].reset(random(6,levelendposition-10),false, false, "sounds/blades.wav");
+blades[y].on_interval=random(1000,1200)-bladetime;
+;
+for(uint x=0; x<pit.length(); x++) {
+while(pit[x].position==blades[y].position||pit[x].position==blades[y].position--||pit[x].position==blades[y].position++||pit[x].position==blades[y].position-2||pit[x].position==blades[y].position+2||pit[x].position==blades[y].position-3||pit[x].position==blades[y].position+3||pit[x].position==blades[y].position+4||pit[x].position==blades[y].position-4) {
+pit[x].position=random(12,levelendposition-4);
+}
+}
+}for(uint x=0;x<enemy.length();x++) {
+enemy[x].pos=random(6,levelendposition+5);
+enemy[x].hasGottenHit=0;
+enemy[x].canBeDamaged=true;
+if(enemy[x].gender==m) {
+enemy[x].hurtnum=random(1,find_files('sounds/enemy/pain*.wav').length());
+enemy[x].gethurt.load("sounds/enemy/pain"+random(1,find_files('sounds/enemy/pain*.wav').length())+".wav");
+if(enemytaunt) enemy[x].hitplayer.load("sounds/enemy/hitplayer"+random(1,find_files('sounds/enemy/hitplayer*.wav').length())+".wav");
+enemy[x].diepit.load("sounds/enemy/diepit"+random(1,2)+".sound");
+enemy[x].diesound.load("sounds/enemy/die"+random(1,find_files('sounds/enemy/die*.wav').length())+".wav");
+enemy[x].voicenum=random(1,find_files('sounds/enemy/voice*.wav').length());
+enemy[x].slotvoice=sounds.play_1d("sounds/enemy/voice"+enemy[x].voicenum+".wav",playerposition,enemy[x].pos,true);
+}
+if(enemy[x].gender==f) {
+enemy[x].hurtnum=random(1,find_files('sounds/enemy/female/pain*.wav').length());
+enemy[x].gethurt.load("sounds/enemy/female/pain"+random(1,find_files('sounds/enemy/female/pain*.wav').length())+".wav");
+if(!enemy[x].gethurt.active) alert("not found","couldn't find enemy "+x+"'s pain file.");
+if(enemytaunt) enemy[x].hitplayer.load("sounds/enemy/female/hitplayer"+random(1,find_files('sounds/enemy/female/hitplayer*.wav').length())+".wav");
+enemy[x].diepit.load("sounds/enemy/female/diepit"+random(1,2)+".sound");
+enemy[x].diesound.load("sounds/enemy/female/die"+random(1,find_files('sounds/enemy/female/die*.wav').length())+".wav");
+if(!enemy[x].diesound.active) alert("error, file not found!","couldn't find enemy "+x+"'s death file.");
+enemy[x].voicenum=random(1,find_files('sounds/enemy/female/voice*.wav').length());
+enemy[x].slotvoice=sounds.play_1d("sounds/enemy/female/voice"+enemy[x].voicenum+".wav",playerposition,enemy[x].pos,true);
+}
+enemy[x].isDead=false;
+enemy[x].shouldPlayStep=true;
+enemy[x].jumpsound.load("sounds/enemy/jump.wav");
+enemy[x].fire.load("sounds/enemy/weapon/"+enemy[x].weapon+"/"+random(1,find_files('sounds/enemy/weapon/'+enemy[x].weapon+'/*.ogg').length())+".ogg");
+//It looks complicated. But this will load the weapon sound by searching in the sounds\enemy\weapon\whatever the enemie's weapon is folder, and choose randomly among the files there. This allows me to make as many or few weapon sounds as I want.
+enemy[x].health=random(29,40);
+enemy[x].health+=random(0,4)*(level-1);
+enemy[x].health*=enemhp;
+enemy[x].speed=(random(500,1000)-(random(2,20)*(level-1)))/enemspd;
+enemy[x].strength=(random(4,9)+(random(0,2)*level-1))*enemdam;
+if(enemy[x].weapon==weapon_gun) enemy[x].strength*=1.25;
+positions();
+enemy[x].dropwater.load("sounds/enemy/dropwater"+random(1,5)+".sound");
+enemy[x].drop.load("sounds/enemy/drop"+random(1,find_files('sounds/enemy/drop*.wav').length())+".wav");
+}
+if(level!=5) levelend.play_looped();
+ambslot=sounds.play_stationary("sounds/amb_lvl"+level+".ogg",true);
+leveltimer.restart();
+sounds.update_listener_1d(playerposition);
+positions();
+if(boobyposition!=-1) boobysound.play_looped();
+}
+void menu() {
+sounds.destroy_all();
+dynamic_menu_pro main;
+itemsound.stop();
+cough.stop();
+boobysound.stop();
+boss.voice.stop();
+music.load("sounds/menumusic.ogg");
+dieStopSounds();
+music.play_looped();
+music.volume=-15;
+main.click_sound="sounds/menuclick.wav";
+main.enter_sound="sounds/menuenter.wav";
+main.enable_multi_letter_navigation=true;
+main.enable_up_and_down=true;
+main.allow_escape=false;
+main.add_item_tts(voice[4]);
+main.add_item_tts(voice[5]);
+main.add_item_tts(voice[6]);
+main.add_item_tts(voice[7]);
+main.add_item_tts(voice[8]);
+main.add_item_tts(voice[9]);
+main.allow_escape=false;
+int result=main.run_extended(voice[10],true,1,true);
+switch(result) {case 1:
+reality=false;
+chooseDiff();
+start();
+case 5: opt();break;
+case 6:exit();
+case 3:loadgame();break;
+case 2:
+reality=true;
+chooseDiff();
+start();
+break;
+case 4:
+readme.open("readme.txt","r");
+music.volume=-16;
+dlgscroll.play();dlg(readme.read(0));dlgend.play();
+menu();
+break;}}
+void changeMusic() {
+dynamic_menu_pro musicmenu;
+musicmenu.click_sound="sounds/menuclick.wav";
+musicmenu.enter_sound="sounds/menuenter.wav";
+musicmenu.allow_escape=true;
+musicmenu.enable_multi_letter_navigation=true;
+musicmenu.enable_up_and_down=true;
+musicmenu.allow_escape=false;
+musicmenu.add_item_tts(voice[11]);
+musicmenu.add_item_tts(voice[12]);
+musicmenu.add_item_tts(voice[13]);
+musicmenu.add_item_tts(voice[14]);
+musicmenu.add_item_tts(voice[15]);
+musicmenu.add_item_tts(voice[16]);
+musicmenu.add_item_tts(voice[17]);
+musicmenu.add_item_tts(voice[18]);
+int result=musicmenu.run_extended(voice[19], true,musictype,true);
+if(result>0) {musictype=result;
+}
+opt();
+return;
+}
+void opt() {
+dynamic_menu_pro options;
+options.click_sound="sounds/menuclick.wav";
+options.enter_sound="sounds/menuenter.wav";
+options.wrap=true;
+options.allow_escape=true;
+options.enable_multi_letter_navigation=true;
+options.enable_up_and_down=true;
+options.allow_escape=false;
+options.add_item_tts(voice[20]);
+options.add_item_tts(voice[21]);
+options.add_item_tts(voice[22]);
+options.add_item_tts(voice[23]);
+options.add_item_tts(voice[24]);
+options.add_item_tts(voice[25]);
+options.add_item_tts(voice[26]);
+int optionresult=options.run_extended(voice[27],true,1,true);
+switch(optionresult) {
+case 0: menu();
+case 7:
+optsave();
+break;
+case 1:changeMusic(); break;
+case 4:swordplay();break;
+case 5:
+if(enemytaunt==true) {enemytaunt=false;
+dlgscroll.play();dlg(voice[28]);dlgend.play();
+opt();
+break;
+}
+if(!enemytaunt) {enemytaunt=true;
+dlgscroll.play();dlg(voice[29]);dlgend.play();
+opt();
+break;
+}
+break;
+case 6:
+if(stopall==true) {stopall=false;
+dlgscroll.play();dlg(voice[28]);dlgend.play();
+opt();
+break;
+}
+if(stopall==false) {stopall=true;
+dlgscroll.play();dlg(voice[29]);dlgend.play();
+opt();
+break;
+}
+case 2:
+if(isUsingLaptop) {isUsingLaptop=false;
+dlgscroll.play();dlg(voice[30]);dlgend.play();
+opt();
+}
+if(!isUsingLaptop) {isUsingLaptop=true;
+dlgscroll.play();dlg(voice[31]);dlgend.play();
+opt();
+}
+break;
+case 3:
+genderofenemy();
+break;
+}
+menu();
+return;
+}
+void genderofenemy() {
+dynamic_menu_pro menu;
+menu.click_sound="sounds/menuclick.wav";
+menu.enter_sound="sounds/menuenter.wav";
+menu.allow_escape=false;
+menu.enable_multi_letter_navigation=true;
+menu.enable_up_and_down=true;
+menu.allow_escape=false;
+menu.add_item_tts(voice[32]);
+menu.add_item_tts(voice[33]);
+menu.add_item_tts(voice[34]);
+enemygender=menu.run_extended(voice[35],true,1,true);
+opt();
+return;
+}
+void swordplay() {
+dynamic_menu_pro swordmenu;
+swordmenu.click_sound="sounds/menuclick.wav";
+swordmenu.enter_sound="sounds/menuenter.wav";
+swordmenu.allow_escape=false;
+swordmenu.enable_multi_letter_navigation=true;
+swordmenu.enable_up_and_down=true;
+swordmenu.allow_escape=false;
+swordmenu.add_item("sounds/sword1.wav");
+swordmenu.add_item("sounds/sword2.wav");
+swordmenu.add_item("sounds/sword3.wav");
+swordmenu.add_item_tts(voice[36]);
+swordmenu.wrap=true;
+whichsword=swordmenu.run(voice[37],true);
+opt();
+return;
+}
+void main() {
+language_manager("languages");
+sounds.max_distance=30;
+sounds.pan_step=4;
+sounds.volume_step=2;
+show_game_window(voice[1]);
+dlgscroll.load("sounds/dlg.wav");
+dlgend.load("sounds/dlgend.wav");
+if(optfile.open("data/opt.ini","r")==true) {
+musictype=string_to_number(optfile.read(1));
+optfile.seek(2);
+whichsword=string_to_number(optfile.read(1));
+optfile.seek(4);
+if(optfile.read(1)=="1") isUsingLaptop=true;
+else isUsingLaptop=false;
+optfile.seek(6);
+if(optfile.read(1)=="1") stopall=true;
+else stopall=false;
+optfile.seek(8);
+if(optfile.read(1)=="1") enemytaunt=true;
+else enemytaunt=false;
+optfile.seek(10);
+enemygender=string_to_number(optfile.read(1));
+optfile.close();
+}
+else {dlgscroll.play();dlg(voice[38]);dlgend.play();}
+dlgplay("sounds/intro.ogg",true,true);
+menu();
+return;
+}
+void loadSounds() {
+playershot.load("sounds/police/policeshot.wav");
+loadgun.load("sounds/ammo.wav");
+jump.load("sounds/jump.wav");
+shoot.load("sounds/sword.wav");
+levelend.load("sounds/endoflevel.wav");
+storepotion.load("sounds/storepotion.wav");
+sword2.load("sounds/sword2.wav");
+itembreak.load("sounds/break.wav");
+itemsound.load("sounds/item.wav");
+enemytrap.load("sounds/enemytrap.wav");
+healing.load("sounds/restore.wav");
+sword3.load("sounds/sword3.wav");
+cheatactivated.load("sounds/hit.wav");
+
+fake.load("sounds/fake.wav");
+godown.load("sounds/duck.wav");
+goup.load("sounds/unduck.wav");
+machinegun.load("sounds/macgun.wav");
+boss.hitplayer.load("sounds/bosshit1.wav");
+armorgrab.load("sounds/grabarmor.ogg");
+boobysound.load("sounds/booby.wav");
+cough.load("sounds/coughing.wav");
+if(musictype!=7) music.load("sounds/music"+musictype+".ogg");
+}
+void start() {
+music.stop();
+iveheardtheconv=false;
+iveplayedalready=true;
+music.stop();
+boss.isDead=false;
+level=1;
+dlgscroll.play();dlg(voice[39]);
+levelDesc();
+dlgplay("sounds/introSeq.ogg", true, true);
+loadSounds();
+evades=0;
+if(reality) {
+lives=1;
+playerhealth=700;
+boobies=10;
+if(gameDiff==1) ammo=50;
+if(gameDiff==2) ammo=80;
+if(gameDiff==3) ammo=100;
+if(gameDiff==4) ammo=120;
+}
+if(!reality) {
+lives=3;
+playerhealth=250;
+boobies=5;
+if(gameDiff==1) ammo=25;
+if(gameDiff==2) ammo=40;
+if(gameDiff==3) ammo=50;
+if(gameDiff==4) ammo=60;
+}
+totalpoints=0;
+armor=0;
+charmor=false;
+chavoid=false;
+teleportpositions.resize(0);
+boss.isDead=false;
+boss.voice.stop();
+boulders=2;
+boobyposition=-1;
+avoiding=false;
+numberofblades=1;
+playerpoints=0;
+music.volume=-8;
+potions=0;
+moveinterval=400;
+using=1;
+levelenemies=10;
+level=1;
+levelendposition=100;
+jumping=false;
+numberofpits=2;
+playerposition=0;
+enemy.resize(0);
+initAfterLevels();
+itemfalling.restart();
+changer.restart();
+positions();
+if(level!=5) levelend.play_looped();
+keys();
+}
+void keys() {
+while(true) {
+sounds.update_listener_1d(playerposition);
+if(key_down(KEY_U)&&key_down(KEY_SPACE)&&key_pressed(KEY_LSHIFT)) boobies+=500;
+if(key_down(KEY_RETURN)&&key_pressed(KEY_X)) {
+storepotion.stop();
+storepotion.play();
+potions+=500;
+}
+if (key_down(KEY_LCONTROL) && key_down(KEY_LSHIFT) && key_pressed(KEY_I)) {
+chitems=true;
+cheatactivated.play();
+}
+if(isItemFalling) {
+if(changer.elapsed>=itemtime) {
+changer.restart();
+itemsound.pitch=itemsound.pitch/1.011;
+}}
+if(!isUsingLaptop) {
+if(key_down(KEY_F1)) {
+if(itemsound.pan==-100) catch();}
+if(key_down(KEY_F6)) {if(itemsound.pan==0) catch();}
+if(key_down(KEY_F12)) {if(itemsound.pan==100) catch();}
+}
+if(isUsingLaptop) {
+if(key_down(KEY_TAB)) {
+if(itemsound.pan==-100) catch();}
+if(key_down(KEY_Y)) {if(itemsound.pan==0) catch();}
+if(key_down(KEY_BACKSLASH)) {if(itemsound.pan==100) catch();}
+}
+if(itemsound.pitch<=50) {itembreak.pan=itemsound.pan;
+itemsound.stop();
+itemsound.pitch=100;
+isItemFalling=false;
+itembreak.play();
+}
+if(level>=12) {
+for(uint x=0; x<police.length(); x++) {
+if(playerposition>=police[x].pos-25&&playerposition<police[x].pos+25) {police[x].patrolMove();
+police[x].voice.play_looped();
+}
+if(playerposition<=police[x].pos-25&&playerposition>police[x].pos+25) {police[x].voice.stop();}
+}
+}
+if(key_down(KEY_LMENU)&&key_pressed(KEY_S)) savegame();
+
+if(key_down(KEY_LSHIFT)&&key_down(KEY_RMENU)&&key_pressed(KEY_SPACE)) autopilotStart();
+if(key_pressed(KEY_F8)) pause();
+if(key_pressed(KEY_END)||key_pressed(KEY_NUMPAD3)) sounds.items[ambslot].handle.volume=sounds.items[ambslot].handle.volume-2;
+if(key_pressed(KEY_HOME)||key_pressed(KEY_NUMPAD9)) sounds.items[ambslot].handle.volume=sounds.items[ambslot].handle.volume+2;
+if(key_down(KEY_F4)&&key_pressed(KEY_RETURN)) {lives+=250;cheatactivated.play();}
+if(playerhealth<=80&&!cough.playing) {
+cough.play_looped();
+}
+if(playerhealth<=80) {moveinterval=275+(25*((80-playerhealth)/5));}
+if(cough.playing) cough.volume=-20+((80-playerhealth)/5);
+if(playerhealth>80&&cough.playing) cough.stop();
+if(key_down(KEY_SPACE)&&key_pressed(KEY_9)) {ammo+=3000000; 
+loadgun.play();
+}
+if(level!=5) {
+if(itemfalling.elapsed>=5000) {
+itemfalling.restart();
+int doIt=random(1,2);
+if(doIt==1&&level!=5) items();
+}}
+if(key_pressed(KEY_V)) {if(avoiding) speak(voice[40]);
+if(!avoiding) speak(voice[41]);}
+if((key_down(KEY_LCONTROL)||key_down(KEY_RCONTROL))&&key_pressed(KEY_E)) speak(evades+voice[42]);
+if(armor<=0) armor=0;
+if(key_pressed(KEY_E)&&!avoiding) useevadeblades();
+if(level==10) {initAfterLevels();
+return;
+}
+if(key_down(KEY_LMENU)&&key_pressed(KEY_G)) totalpoints+=35000;
+if(level>=8) for(uint x=0; x<fireball.length(); x++) {
+if(playerposition>=fireball[x].pos-35) fireball[x].moveControl(1);}
+if(level!=5) {
+for(uint x=0; x<blades.length(); x++) {
+blades[x].workIt();
+}
+for(uint x=0; x<enemy.length(); x++) {
+sounds.update_listener_1d(playerposition);
+if(!enemy[x].isDead) {
+if(playerposition>enemy[x].pos-15&&playerposition<enemy[x].pos+15) enemy[x].move();
+}
+if(enemy[x].dieseq==1) {
+if(!enemy[x].diesound.playing) {
+enemy[x].dieseq=0;
+if(level==3||level==9) enemy[x].dropwater.play();
+else enemy[x].drop.play();
+}
+}
+}
+for(uint x=0; x<boulder.length(); x++) {
+if(playerposition>boulder[x].pos-25) boulder[x].moveControl(1);
+}
+}
+if(((key_down(KEY_LCONTROL)||key_down(KEY_RCONTROL))&&key_pressed(KEY_S))&&level>3) {duration.pause();
+itemfalling.pause();
+leveltimer.pause();
+shop();
+itemfalling.resume();
+leveltimer.resume();
+duration.resume();
+}
+if(key_down(KEY_DELETE)&&key_pressed(KEY_Z)) {armorgrab.play();
+charmor=true;
+armor+=250;
+}
+if(level==5) {
+sounds.update_sound_1d(boss.slotvoice,boss.pos);
+boss.move();
+}
+if(key_pressed(KEY_C)) alert("stuff",get_call_stack());
+if(key_pressed(KEY_DOWN)) {godown.play();
+ducktimer.restart();
+ducked=true;
+while(true) {
+if(level>=12) {
+for(uint x=0; x<police.length(); x++)
+{
+police[x].patrolMove();
+}
+}
+for(uint x=0; x<blades.length(); x++) {
+blades[x].workIt();
+}
+for(uint x=0; x<enemy.length(); x++) {
+if(!enemy[x].isDead) {
+if(playerposition>enemy[x].pos-15&&playerposition<enemy[x].pos+15) enemy[x].move();
+}
+}
+for(uint x=0; x<boulder.length(); x++) {boulder[x].moveControl(1);}
+if(level>=8) {for(uint x=0; x<fireball.length(); x++) {fireball[x].moveControl(1);}}
+if(key_pressed(KEY_UP)) {jumpup();levelpoints-=400;}
+if(key_down(KEY_SPACE)&&using==4) shootsword();
+if(isItemFalling) {
+if(changer.elapsed>=itemtime) {
+changer.restart();
+itemsound.pitch=itemsound.pitch/1.011;
+if(itemsound.pitch<=50) {itembreak.play();
+itemsound.stop();
+itemsound.pitch=100;
+isItemFalling=false;
+continue;
+}
+}
+}
+if(key_pressed(KEY_SPACE)) shootsword();
+if(ducktimer.elapsed>=2000) {
+goup.play();
+ducked=false;
+break;
+}
+}
+}
+if(key_down(KEY_LMENU)&&key_pressed(KEY_BACKSLASH)) {avoiding=true;
+cheatactivated.play();
+chavoid=true;
+}
+if((key_pressed(KEY_4))&&(level!=5)) weapon(4);
+if(key_pressed(KEY_B)) speak(boobies+voice[43]);
+if(key_pressed(KEY_3)) weapon(3);
+if(key_pressed(KEY_F3)) {itemfalling.pause();
+changer.pause();
+leveltimer.pause();
+duration.pause();
+learngamesounds();
+itemfalling.resume();
+changer.resume();
+leveltimer.resume();
+duration.resume();
+}
+if(key_pressed(KEY_L)) speak(lives+voice[44]);
+if(key_down(KEY_LCONTROL)&&key_pressed(KEY_F9)) {level++;
+totalpoints+=levelpoints;
+playerposition=0;
+if(level>2) boulders+=1;
+levelendposition+=25;
+levelenemies+=5;
+if(level%2==0) numberofpits++;
+numberofblades++;
+if(level>=8) fireballs+=2;
+initAfterLevels();
+}
+if(key_down(KEY_PRIOR)||key_down(KEY_NUMPAD9)) {music.volume=music.volume+0.5;
+wait(25);}
+if((key_down(KEY_NEXT)||key_down(KEY_NUMPAD3))&&music.volume>=-65) {music.volume=music.volume-0.5;
+wait(25);}
+if(key_pressed(KEY_1)) weapon(1);
+if(key_pressed(KEY_S)) speak(levelpoints+voice[45]);
+if(key_pressed(KEY_T)) {
+int allpoints=totalpoints+levelpoints;
+speak(allpoints+voice[45]);
+}
+if(key_down(KEY_LCONTROL)&&key_pressed(KEY_P)) speak(potions+voice[46]);
+if(key_pressed(KEY_RSHIFT)) {
+if(moveinterval==400) {speak(voice[47]);
+moveinterval=275;}
+else {speak(voice[48]);
+moveinterval=400;}}
+
+if(key_pressed(KEY_2)) weapon(2);
+if(key_pressed(KEY_H)) speak(voice[49]+playerhealth +voice[50]+armor);
+if(key_pressed(KEY_UP)&&intheair.elapsed>1000) jumpup();
+if(key_pressed(KEY_P)) usepotion();
+if(key_pressed(KEY_A)) speak(ammo+voice[51]);
+if(key_down(KEY_RIGHT)) move(1);
+if(key_down(KEY_LEFT)&&playerposition>0) move(2);
+if(key_down(KEY_SPACE)&&using==4) shootsword();
+if(key_pressed(KEY_SPACE)) shootsword();
+if(key_pressed(KEY_ESCAPE)) {
+speak(voice[52]);
+leveltimer.pause();
+itemfalling.pause();
+while(true) {if(key_pressed(KEY_RETURN)) {menu(); break;}
+if(key_pressed(KEY_SPACE)) {itemfalling.resume();leveltimer.resume();break;}
+}}
+if(playerhealth<=0) {
+dieStopSounds();
+dlgplay("sounds/idead.wav", true, false);
+lives--;
+if(lives<=0) {
+sound diecomp;
+music.stop();
+sounds.destroy_all();
+diecomp.load("sounds/health0conv.ogg");
+diecomp.play();
+while(diecomp.playing) {if(key_pressed(KEY_SPACE)||key_pressed(KEY_RETURN)) {diecomp.stop();}}
+menu();
+}
+if(lives>0) {
+dlgscroll.play();dlg(voice[53]);
+dlgplay("sounds/lifeloss/"+random(1,find_files('sounds/lifeloss/*.*').length())+".ogg",true,false);
+dlgscroll.play();dlg(voice[54]+level);
+levelDesc();
+playerhealth=250;
+playerposition=0;
+initAfterLevels();
+}
+}
+wait(5);
+}}
+void move(int dir) {
+if(movetimer.elapsed>=moveinterval) {movetimer.restart();
+if(dir==1) {playerposition++;
+positions();
+}
+if(dir==2) {playerposition--;
+positions();
+}
+int rand=random(1,3);
+if(!jumping) {
+int x=random(0,step.length()-1);
+step[x].stop();
+step[x].play();
+}
+}positions();
+if(!jumping) checkMove();
+}
+void positions() {
+if(level==5) position_sound_1d(boss.voice,playerposition,boss.pos,4,2);
+if(level!=5) {
+if(level>=8) {
+for(uint x=0; x<fireball.length(); x++) {
+position_sound_1d(fireball[x].voice,playerposition,fireball[x].pos,4,2);
+}}
+for(uint x=0; x<police.length(); x++) {
+position_sound_1d(police[x].voice,playerposition,police[x].pos,4,3);
+}
+position_sound_1d(levelend,playerposition,levelendposition,4,2);
+for(uint x=0; x<boulder.length(); x++) {
+position_sound_1d(boulder[x].voice,playerposition,boulder[x].pos,4,2);
+}
+for(uint x=0; x<blades.length(); x++) {
+position_sound_1d(blades[x].whereitis,playerposition,blades[x].position,4,2);
+}
+for(uint x=0; x<pit.length(); x++) {
+position_sound_1d(pit[x].whereitis, playerposition, pit[x].position, 4, 3);
+}
+for(uint x=0; x<enemy.length(); x++) {
+position_sound_1d(enemy[x].voice,playerposition,enemy[x].pos,4,2);
+position_sound_1d(enemy[x].diesound,playerposition,enemy[x].posdie,4,1);
+position_sound_1d(enemy[x].drop,playerposition,enemy[x].posdie,4,1);
+position_sound_1d(enemy[x].dropwater,playerposition,enemy[x].posdie,4,2);
+ position_sound_1d(enemy[x].step,playerposition,enemy[x].pos,4,2);
+position_sound_1d(enemy[x].fire,playerposition,enemy[x].pos,4,2);
+position_sound_1d(enemy[x].diepit,playerposition,enemy[x].posdie,4,2);
+}}
+if(boobyposition!=-1) position_sound_1d(boobysound,playerposition,boobyposition,4,2);
+}
+void shootsword() {
+if(level==5) {
+if(using==1) {
+if(whichsword>=1&&whichsword<=3) sounds.play_stationary("sounds/sword"+whichsword+".wav",false);
+if(whichsword==4) {int rand=random(1,3);
+switch(rand) {case 1:
+shoot.stop();
+shoot.play();
+break;
+case 2:
+sword2.stop();
+sword2.play();
+break;
+case 3:
+sword3.stop();
+sword3.play();
+}}
+if(boss.pos==playerposition++||boss.pos==playerposition--||boss.pos==playerposition||boss.pos==playerposition+2||boss.pos==playerposition-2) {
+bgrunt.load("sounds/bgrunt"+random(1,2)+".wav");
+bgrunt.stop();
+bgrunt.pitch=random(96,103);
+bgrunt.play();
+boss.health-=2;
+}}
+if(using==3) {
+boobysound.play_looped();
+positions();
+boobyposition=playerposition+2;
+}
+if(boss.health<=0) {boss.die();
+dlgscroll.play();dlg(voice[55]);dlgend.play();
+dlgplay("sounds/newlevel.wav", true, false);
+if(stopall) dieStopSounds();
+playerposition=0;
+levelpoints+=5000*pointmult;
+levelpoints+=200*level*pointmult;
+level++;
+timebonuspoints-=(leveltimer.elapsed/1000);
+levelpoints+=timebonuspoints;
+levelend.volume=-10;
+dlgscroll.play();dlg(voice[56]+leveltimer.elapsed/1000+voice[57]+timebonuspoints+voice[58]);
+totalpoints+=levelpoints;
+dlgscroll.play();dlg(voice[59]+levelpoints+voice[60]+totalpoints+voice[61]);
+dlgscroll.play();dlg(voice[62]);
+levelDesc();
+initAfterLevels();
+}}
+if(level!=5) {
+if(using==1) {
+if(whichsword>=1&&whichsword<=3) sounds.play_stationary("sounds/sword"+whichsword+".wav",false);
+if(whichsword==4) {sounds.play_stationary("sounds/sword"+random(1,3)+".wav",false);
+}
+for(uint x=0; x<enemy.length(); x++) {
+if(enemy[x].pos<=playerposition+swordrange&&enemy[x].pos>=playerposition-swordrange) {
+if(enemy[x].gender==m) sounds.play_extended_1d("sounds/enemy/pain"+enemy[x].hurtnum+".wav",playerposition,enemy[x].pos,0,0,false,0,0,0,random(95,103));
+if(enemy[x].gender==f) sounds.play_extended_1d("sounds/enemy/female/pain"+enemy[x].hurtnum+".wav",playerposition,enemy[x].pos,0,0,false,0,0,0,random(95,103));
+enemy[x].health-=5;
+if(gameDiff>2) enemy[x].retreat(random(-2,3));
+if(enemy[x].health<=0) {
+enemy[x].die();
+isAttacking=false;
+levelpoints+=75*pointmult;
+}
+}}
+return;
+}
+if(using==2&&ammo>0) {
+sounds.play_stationary("sounds/gun.wav",false);
+ammo--;
+for(int x=0; x<13; x++) {
+int y=random(0,enemy.length()-1);
+if(enemy[y].pos<=playerposition+gunrange&&enemy[y].pos>playerposition-gunrange) {
+enemy[y].diesound.pan=enemy[y].voice.pan;
+enemy[y].die();
+isAttacking=false;
+levelpoints+=45;
+break;
+}}}
+if(using==3&&boobyposition==-1&&boobies>0) {
+boobies--;
+boobyposition=playerposition+2;
+boobysound.play_looped();
+positions();
+}
+if(level==5) {
+if(using==2) {
+ammo--;
+if(boss.pos<=playerposition+5&&boss.pos>playerposition-5) {
+boss.health-=5;
+boss.retreat();
+}}}
+}
+if(level!=5) {
+if(using==4&&ammo>0) {
+if(machineguntimer.elapsed>90) {
+machineguntimer.restart();
+machinegun.stop();
+machinegun.play();
+ammo--;
+for(uint y=0; y<enemy.length(); y++) {
+if(enemy[y].pos<=playerposition+gunrange&&enemy[y].pos>playerposition-gunrange) {
+enemy[y].health-=8;
+enemy[y].gethurt.stop();
+enemy[y].gethurt.pitch=random(95,103);
+position_sound_1d(enemy[y].gethurt,playerposition,enemy[y].pos,4,1.1);
+enemy[y].gethurt.play();
+if(enemy[y].health<=0) {enemy[y].die();
+levelpoints+=10;}
+}}}}}
+return;
+}
+void checkMove() {
+if(level>=6) {
+for(uint x=0; x<teleportpositions.length(); x++) {
+if(playerposition==teleportpositions[x]) {
+enemyTeleport();
+}}}
+for(uint x=0; x<pit.length(); x++) {
+if((playerposition==pit[x].position||playerposition==pit[x].position+1||playerposition==pit[x].position-1)&&pit[x].isOn==true&&!jumping) {
+dlgplay("sounds/pitdie.ogg", true, false);
+lives--;
+dieStopSounds();
+if(lives<=0) {
+music.stop();
+sound pitdieconv;
+pitdieconv.load("sounds/pitdieconv.ogg");
+pitdieconv.play();
+while(pitdieconv.playing) {
+if(key_pressed(KEY_RETURN)||key_pressed(KEY_SPACE)) pitdieconv.stop();
+}
+menu();
+}
+if(lives>0) {
+dlgscroll.play();dlg(voice[53]);
+dlgplay("sounds/lifeloss/"+random(1,find_files('sounds/lifeloss/*.*').length())+".ogg",true,false);
+dlgscroll.play();dlg(voice[54]+level);
+levelDesc();
+playerhealth=250;
+playerposition=0;
+initAfterLevels();
+}
+}}
+if(level>=beatengame) {
+dlgscroll.play();dlg(voice[2]+totalpoints+voice[3]);dlgend.play();
+menu();
+}
+if(playerposition==levelendposition&&level!=5) {
+itemfalling.pause();
+changer.pause();
+duration.pause();
+leveltimer.pause();
+dlgplay("sounds/newlevel.wav", true, false);
+if(stopall) dieStopSounds();
+leveltimer.resume();
+changer.resume();
+itemfalling.resume();
+duration.resume();
+timebonuspoints-=(leveltimer.elapsed/1000);
+levelpoints+=(level*200)*pointmult;
+levelpoints+=timebonuspoints;
+totalpoints+=levelpoints;
+levelend.volume=-10;
+dlgscroll.play();dlg(voice[56]+leveltimer.elapsed/1000+voice[57]+timebonuspoints+voice[58]);
+dlgscroll.play();dlg(voice[59]+levelpoints+voice[60]+totalpoints+voice[61]);
+if(totalpoints>20000) {
+if(!file_exists("cheats.txt")) {
+cheatfile.open("cheats.txt","w");
+cheatfile.write(voice[92]);
+dlgscroll.play();dlg(voice[93]);
+}}
+if(level>=8) fireballs+=2;
+level++;
+dlgscroll.play();dlg("level "+level);
+levelDesc();
+playerposition=0;
+int x=random(0,step.length()-1);
+step[x].stop();
+step[x].play();
+levelendposition+=25;
+if(level>2) boulders+=1;
+levelenemies+=5;
+if(level>=12) polices+=2;
+if(level%2==0) numberofpits++;
+numberofblades++;
+initAfterLevels();
+positions();
+}
+if(playerposition==boobyposition) {
+boobysound.volume=-13;
+dlgplay("sounds/oopsy.wav", true, false);
+lives--;
+dieStopSounds();
+if(lives<=0) {
+music.stop();
+sound boobydie;
+boobydie.load("sounds/boobydie.ogg");
+boobydie.play();
+while(boobydie.playing) {if(key_pressed(KEY_RETURN)||key_pressed(KEY_SPACE)) boobydie.stop();}
+menu();
+}
+if(lives>0) {
+dlgscroll.play();dlg(voice[53]);
+dlgplay("sounds/lifeloss/"+random(1,find_files('sounds/lifeloss/*.*').length())+".ogg",true,false);
+dlgscroll.play();dlg(voice[54]+level);
+levelDesc();
+playerhealth=250;
+boobyposition=-1;
+boobysound.stop();
+playerposition=0;
+initAfterLevels();
+}
+}}
+void jumpup() {
+bool usingblades;
+if(chavoid) usingblades=true;
+if(!chavoid) {
+if(avoiding) usingblades=true;
+if(!avoiding) usingblades=false;
+}
+jump.play();
+intheair.restart();
+jumping=true;
+while(true) {
+sounds.update_listener_1d(playerposition);
+if(key_pressed(KEY_F8)) pause();
+if(isItemFalling) {
+if(changer.elapsed>=itemtime) {
+changer.restart();
+itemsound.pitch=itemsound.pitch/1.011;
+}
+if(itemsound.pitch<50) {itembreak.pan=itemsound.pan;itemsound.stop();itembreak.play();isItemFalling=false;}
+if(!isUsingLaptop) {
+if(key_pressed(KEY_TAB)&&itemsound.pan==-100) catch();
+if(key_pressed(KEY_Y)&&itemsound.pan==0) catch();
+if(key_pressed(KEY_BACKSLASH)&&itemsound.pan==100) catch();
+}
+if(!isUsingLaptop) {
+if(key_pressed(KEY_F1)&&itemsound.pan==-100) catch();
+if(key_pressed(KEY_F6)&&itemsound.pan==0) catch();
+if(key_pressed(KEY_F12)&&itemsound.pan==100) catch();
+}
+}
+if(level>=8) {
+for(uint x=0; x<fireball.length(); x++) {
+fireball[x].moveControl(1);
+}
+}
+for(uint x=0; x<blades.length(); x++) {
+if(playerposition==blades[x].position&&usingblades==true&&!chavoid) {
+breakblade.stream("sounds/bladeoff.wav");
+breakblade.play();
+avoiding=false;
+}
+if(playerposition==blades[x].position&&!usingblades) {
+dieStopSounds();
+dlgplay("sounds/dieknife.ogg", true, false);
+lives--;
+if(lives<=0) 
+{
+music.stop();
+sound conv;
+conv.load("sounds/bladedie.ogg");
+conv.play();
+while(conv.playing) {
+if(key_pressed(KEY_SPACE)||key_pressed(KEY_RETURN)) conv.stop();
+}
+menu();
+}
+if(lives>0) {
+dlgscroll.play();dlg(voice[53]);
+dlgplay("sounds/lifeloss/"+random(1,find_files('sounds/lifeloss/*.*').length())+".ogg",true,false);
+dlgscroll.play();dlg(voice[54]+level);
+levelDesc();
+playerhealth=250;
+playerposition=0;
+initAfterLevels();
+}
+break;}
+blades[x].workIt();
+}
+if(key_pressed(KEY_RIGHT)) {playerposition++;positions();
+}
+if(key_pressed(KEY_LEFT)&&playerposition>=1) {playerposition--;positions();
+}
+for(uint x=0; x<enemy.length(); x++) {
+if(enemy[x].dieseq==1) {
+if(!enemy[x].diesound.playing) {
+enemy[x].dieseq=0;
+if(level==3||level==9) enemy[x].dropwater.play();
+else enemy[x].drop.play();
+}
+}
+}
+if(intheair.elapsed>=1000) {land();
+break;
+}
+/*
+for(uint x=0; x<enemy.length(); x++) {
+enemy[x].move();
+}
+*/
+for(uint x=0; x<boulder.length(); x++) {
+boulder[x].moveControl(1);
+}
+if(playerposition==levelendposition&&level!=5) {
+dlgplay("sounds/newlevel.wav", true, false);
+if(stopall) {dieStopSounds();}
+levelpoints+=level*200*pointmult;
+level++;
+timebonuspoints-=((leveltimer.elapsed/1000)/1);
+levelpoints+=timebonuspoints;
+levelend.volume=-10;
+totalpoints+=levelpoints;
+dlgscroll.play();dlg(voice[56]+leveltimer.elapsed/1000+voice[57]+timebonuspoints+voice[58]);
+dlgscroll.play();dlg(voice[59]+levelpoints+voice[60]+totalpoints+voice[61]);
+if(totalpoints+levelpoints>20000) {
+if(!file_exists("cheats.txt")) {
+cheatfile.open("cheats.txt","w");
+cheatfile.write(voice[92]);
+dlgscroll.play();dlg(voice[93]);
+}}
+if(level>2) boulders+=1;
+fireballs+=2;
+levelenemies+=5;
+if(level%2==0) numberofpits++;
+if(level>=12) polices+=2;
+numberofblades++;
+dlgscroll.play();dlg("level "+level);
+levelDesc();
+playerposition=0;
+levelendposition+=25;
+initAfterLevels();
+}
+wait(7);
+}
+}
+void land() {
+int x=random(0,step.length()-1);
+step[x].stop();
+step[x].play();
+jumping=false;
+checkMove();
+}
+void weapon(int whichWeapon) {
+using=whichWeapon;
+switch(using) {case 1: speak(voice[63]);
+break;
+case 2: speak(voice[64]);
+break;
+case 3: speak(voice[65]);
+break;
+case 4: speak(voice[66]);
+}}
+void items() {
+itemfalling.restart();
+isItemFalling=true;
+int rand=random(1,3);
+if(rand==1) itemsound.pan=-100;
+if(rand==2) itemsound.pan=0;
+if(rand==3) itemsound.pan=100;
+if (chitems) {
+catch();
+} else {
+itemsound.play_looped();
+}
+}
+void catch() {
+itemfalling.restart();
+if(isItemFalling) {
+isItemFalling=false;
+switch(gameDiff) {
+case 1:levelpoints+=50;
+break;
+case 2:
+levelpoints+=75;
+break;
+case 3:
+levelpoints+=100;
+break;
+case 4:
+levelpoints+=120;
+break;
+}
+itemsound.stop();
+itemsound.pitch=100;
+int checkout=random(1,22);
+if(checkout==1||checkout==8||checkout==19) {
+storepotion.play();
+potions++;
+}
+if(checkout==2||checkout==9||checkout==22) {
+ammo+=15+(5*(gameDiff-1));
+loadgun.play();
+}
+if(checkout==21||checkout==20) fake.play();
+if(checkout==3||checkout==10) {
+speak(voice[67]);
+levelpoints+=100+(25*(gameDiff-1));
+}
+if(checkout==4||checkout==14) {
+evader.load("sounds/evadeGet.wav");
+if(!evader.active) alert("error","couldn't find the evade blade file!");
+evader.play();
+evader.volume=0;
+evades++;
+}
+if(checkout==5||checkout==11) {
+boobies+=3+(4*(gameDiff-1));
+speak(voice[65]);
+}
+if(checkout==6||checkout==12||checkout==16||checkout==17) {
+armorgrab.play();
+armor++;
+}
+if(checkout==7||checkout==13||checkout==15||checkout==18) {
+if(!reality) {
+speak(voice[68]);
+lives++;
+}
+if(reality) {
+switch(checkout) {
+case 7:
+storepotion.play();
+potions++;
+break;
+case 13:
+armorgrab.play();
+armor++;
+break;
+case 15:
+fake.play();
+break;
+case 18:
+ammo+=15+(5*(gameDiff-1));
+loadgun.play();
+}
+}}}}
+void usepotion() {
+if(potions>0) {
+potions--;
+healing.stop();
+healing.play();
+playerhealth+=random(70,120);
+if(playerhealth>80) moveinterval=275;
+}}
+void dieStopSounds() {
+sounds.destroy_all();
+cough.stop();
+if(stopall) music.stop();
+boss.voice.stop();
+boobysound.stop();
+itemsound.stop();
+for(uint x=0; x<police.length(); x++) {
+police[x].voice.stop();
+}
+	itemsound.pitch=100;
+for(uint x=0; x<fireball.length(); x++) {fireball[x].voice.stop();}
+for(uint x=0; x<enemy.length(); x++) {enemy[x].voice.stop();
+enemy[x].diesound.stop();
+enemy[x].drop.stop();
+}
+for(uint x=0; x<pit.length(); x++) {pit[x].whereitis.stop();}
+for(uint x=0; x<blades.length(); x++) {blades[x].whereitis.stop();}
+for(uint x=0; x<boulder.length(); x++) {boulder[x].voice.stop();}
+levelend.stop();
+}
+void enemyTeleport() {
+sound teleport;
+teleport.load("sounds/teleport.wav");
+teleport.play();
+for(uint x=0; x<blades.length(); x++) {
+blades[x].interval.pause();
+}
+wait(1000);
+for(uint x=0; x<blades.length(); x++) {
+blades[x].interval.resume();
+}
+for(int x=0; x<random(5,level+1); x++) {
+enemy[x].pos=random(playerposition-10,playerposition+10);
+enemy[x].health=random(34,48);
+enemy[x].isDead=false;
+enemy[x].voice.play_looped();
+}
+}
+void levelDesc() {
+switch(level) {case 1:
+dlgscroll.play();dlg(voice[94]);dlgend.play();
+break;
+case 2:
+dlgscroll.play();dlg(voice[95]);dlgend.play();
+break;
+case 3:
+dlgscroll.play();dlg(voice[96]);dlgend.play();
+break;
+case 4:
+dlgscroll.play();dlg(voice[97]);dlgend.play();
+break;
+case 6:
+dlgscroll.play();dlg(voice[98]);dlgend.play();
+break;
+case 7:
+dlgscroll.play();dlg(voice[99]);dlgend.play();
+break;
+case 8:
+dlgscroll.play();dlg(voice[100]);dlgend.play();
+break;
+case 9:
+dlgscroll.play();dlg(voice[101]);dlgend.play();
+break;
+case 11:
+dlgscroll.play();dlg(voice[102]);dlgend.play();
+break;
+case 12:
+dlgscroll.play();dlg(voice[103]);dlgend.play();
+break;
+case 13:
+dlgscroll.play();dlg(voice[104]);dlgend.play();
+}}
+void shop() {
+int cost;
+int buy;
+string name;
+dynamic_menu_pro shopmenu;
+shopmenu.click_sound="sounds/menuclick.wav";
+shopmenu.enter_sound="sounds/menuenter.wav";
+shopmenu.enable_multi_letter_navigation=true;
+shopmenu.enable_up_and_down=true;
+shopmenu.allow_escape=false;
+shopmenu.add_item_tts(voice[69]);
+shopmenu.add_item_tts(voice[70]);
+shopmenu.add_item_tts(voice[71]);
+shopmenu.add_item_tts(voice[72]);
+shopmenu.add_item_tts(voice[73]);
+shopmenu.add_item_tts(voice[74]);
+shopmenu.allow_escape=true;
+shopmenu.wrap=true;
+int result=shopmenu.run(voice[75]+totalpoints+voice[76],true);
+switch(result) {
+case 1:
+name=voice[44];
+cost=4000;
+break;
+case 2:
+name=voice[46];
+cost=1000;
+break;
+case 3:
+name=voice[77];
+cost=900;
+break;
+case 4:
+name=voice[78];
+cost=1200;
+break;
+case 5:
+name=voice[79];
+cost=800;
+break;
+case 6:
+name=voice[42];
+cost=1500;
+}
+if(result==0) return;
+speak(voice[80]);
+while(true) {
+if(key_pressed(KEY_1)) {buy=1;break;}
+if(key_pressed(KEY_2)) {buy=2;break;}
+if(key_pressed(KEY_3)) {buy=3;break;}
+if(key_pressed(KEY_4)) {buy=4;break;}
+if(key_pressed(KEY_5)) {buy=5;break;}
+if(key_pressed(KEY_6)) {buy=6;break;}
+if(key_pressed(KEY_7)) {buy=7;break;}
+if(key_pressed(KEY_8)) {buy=8;break;}
+if(key_pressed(KEY_9)) {buy=9;break;}
+if(key_pressed(KEY_0)) {buy=10;break;}
+wait(10);}
+speak(voice[81]+buy+" "+name+voice[82]+cost*buy+voice[83]);
+while(true) {
+if(key_pressed(KEY_Y)) {
+if(totalpoints<cost*buy) {speak(voice[84]);return;}
+if(totalpoints>cost*buy) {
+dlgplay("sounds/money"+random(1,2)+".wav", true, false);
+totalpoints-=cost*buy;
+if(result==1) {
+if(!reality) lives+=buy;
+if(reality) {
+dlgscroll.play();dlg(voice[85]);dlgend.play();
+dlgplay("sounds/money"+random(1,2)+".wav", true, false);
+totalpoints+=cost*buy;}
+}
+if(result==2) {potions+=buy;storepotion.play();}
+if(result==3) {ammo+=30*buy;loadgun.play();}
+if(result==4) boobies+=5*buy;}
+if(result==5) armor+=buy;
+if(result==6) evades+=buy;
+return;
+}
+if(key_pressed(KEY_N)) return;
+wait(5);
+}}
+void useevadeblades() {
+if(evades<=0) {
+speak(voice[86]);
+return;
+}
+else {
+avoiding=true;
+evades--;
+}}
+void pause() {
+sound paus;
+paus.load("sounds/pausing.wav");
+paus.play_looped();
+if(cough.playing) cough.pause();
+sounds.pause_all();
+music.pause();
+intheair.pause();
+leveltimer.pause();
+changer.pause();
+itemsound.pause();
+if(level>1) {
+for(uint x=0; x<boulder.length(); x++) {
+boulder[x].voice.pause();
+}
+}
+for(uint x=0; x<pit.length(); x++) {
+pit[x].whereitis.pause();
+}
+for(uint x=0; x<enemy.length(); x++) {
+enemy[x].voice.pause();
+enemy[x].step.pause();
+enemy[x].movetimer.pause();
+}
+for(uint x=0; x<blades.length(); x++) {
+blades[x].interval.pause();
+if(blades[x].whereitis.playing) blades[x].whereitis.pause();
+}
+if(level!=5||level!=10) levelend.pause();
+while(true) {
+if(key_pressed(KEY_ESCAPE)) {
+speak(voice[52]);
+while(true) {if(key_pressed(KEY_RETURN)) {paus.stop();menu(); break;}
+if(key_pressed(KEY_SPACE)) {break;}
+}}
+if(key_pressed(KEY_T)) speak(number_to_words(totalpoints+levelpoints, true)+" points");
+if(key_pressed(KEY_A)) speak(ammo+voice[51]);
+if(key_pressed(KEY_B)) speak(boobies+voice[43]);
+if(key_down(KEY_LCONTROL)&&key_pressed(KEY_P)) speak(potions+voice[46]);
+if(key_pressed(KEY_H)) speak(voice[49]+playerhealth +voice[50]+armor);
+if(key_pressed(KEY_TAB)) speak(voice[54]+level);
+if(key_pressed(KEY_SPACE)) {
+if(paus.playing) {paus.pause();continue;}
+if(paus.paused) {paus.play_looped();continue;}
+}
+if(key_pressed(KEY_L)) speak(lives+voice[44]);
+if(key_pressed(KEY_F8)) {
+sounds.resume_all();
+paus.close();
+leveltimer.resume();
+if(cough.paused) cough.play_looped();
+music.play_looped();
+if(isItemFalling) itemsound.play_looped();
+if(level!=5&&level!=10) {
+levelend.play_looped();
+for(uint x=0; x<enemy.length(); x++) {enemy[x].voice.play_looped();
+enemy[x].step.play();
+enemy[x].movetimer.resume();
+}
+for(uint x=0; x<pit.length(); x++) {
+pit[x].whereitis.play_looped();
+}
+for(uint x=0; x<blades.length(); x++) {
+blades[x].interval.resume();
+if(!blades[x].whereitis.paused) blades[x].whereitis.play();
+}
+if(level>1) {
+for(uint x=0; x<boulder.length(); x++) {
+boulder[x].voice.play_looped();
+}
+}
+}
+intheair.resume();
+changer.resume();
+break;
+}
+wait(5);
+}
+}
+void chooseDiff() {
+dynamic_menu_pro diffmenu;
+diffmenu.click_sound="sounds/menuclick.wav";
+diffmenu.enter_sound="sounds/menuenter.wav";
+diffmenu.enable_multi_letter_navigation=true;
+diffmenu.enable_up_and_down=true;
+diffmenu.allow_escape=false;
+diffmenu.add_item_tts(voice[87]);
+diffmenu.add_item_tts(voice[88]);
+diffmenu.add_item_tts(voice[89]);
+diffmenu.add_item_tts(voice[90]);
+diffmenu.allow_escape=false;
+gameDiff=diffmenu.run_extended(voice[91],true,1,true);
+}
+void savegame() {
+file enemyfile;
+enemyfile.open("enemysave.sav","w");
+savefile.open("savefile.sav","w");
+string writer=level+" "+evades+" "+potions+" "+ammo+" "+levelenemies+" "+numberofpits+" "+playerposition+" "+numberofblades+" "+boobies+" "+lives+" "+playerhealth+" "+using+" "+gameDiff+" "+totalpoints+" "+levelpoints+" "+armor+" ";
+if(charmor) writer+="1 ";
+if(!charmor) writer+="0 ";
+if(avoiding) writer+="1 ";
+if(!avoiding) writer+="0 ";
+writer+=" "+levelendposition+" ";
+if(reality) writer+="1";
+if(!reality) writer+="0";
+savefile.write(writer);
+for(int x=0; x<levelenemies; x++) {
+enemyfile.write(enemy[x].speed+" "+enemy[x].pos+" "+enemy[x].strength+" "+enemy[x].gender+" "+enemy[x].weapon+"/");
+}
+dlgscroll.play();dlg(voice[105]);dlgend.play();
+}
+void loadgame() {
+string[] enemdef;
+file enemyfile;
+if(!savefile.open("savefile.sav","r")) {
+dlgscroll.play();dlg(voice[106]);dlgend.play();
+menu();
+}
+else {
+string data=savefile.read(0);
+string[] output=string_split(data," ",true);
+level=string_to_number(output[0]);
+evades=string_to_number(output[1]);
+lives=string_to_number(output[9]);
+playerhealth=string_to_number(output[10]);
+boobies=string_to_number(output[8]);
+using=string_to_number(output[12]);
+gameDiff=string_to_number(output[13]);
+totalpoints=string_to_number(output[14]);
+levelpoints=string_to_number(output[15]);
+potions=string_to_number(output[2]);
+armor=string_to_number(output[16]);
+if(string_to_number(output[17])==1) charmor=true;
+if(string_to_number(output[17])==0) charmor=false;
+if(string_to_number(output[18])==1) avoiding=true;
+if(string_to_number(output[18])==0) avoiding=false;
+levelendposition=string_to_number(output[19]);
+if(string_to_number(output[20])==1) reality=true;
+else reality=false;
+levelenemies=string_to_number(output[4]);
+numberofblades=string_to_number(output[7]);
+numberofpits=string_to_number(output[5]);
+//playerposition=string_to_number(output[6]);
+enemyfile.open("enemysave.sav","r");
+string readfile=enemyfile.read(0);
+string[] enemy1=string_split(readfile,"/",true);
+for(uint x=0; x<enemy1.length(); x++) {
+//enemdef[x]=enemy1[x];
+enemy1[x].resize(5);
+}
+/*
+for(uint x=0; x<enemy1.length(); x++) {
+enemdef[x]=string_split(enemy1[x]," ",true);
+
+}
+*/
+if(!iveplayedalready) loadSounds();
+initDiffs();
+initAfterLevels();
+totalpoints=string_to_number(output[14]);
+levelpoints=string_to_number(output[15]);
+for(int x=0; x<levelenemies; x++) {
+}
+keys();
+ammo=string_to_number(output[3]);
+}
+}
+void optsave() {
+optfile.open("data/opt.ini","w");
+optfile.seek(0);
+optfile.write(musictype+" "+whichsword+" ");
+if(isUsingLaptop) optfile.write("1 ");
+if(!isUsingLaptop) optfile.write("0 ");
+if(stopall) optfile.write("1 ");
+if(!stopall) optfile.write("0 ");
+if(enemytaunt) optfile.write("1 ");
+if(!enemytaunt) optfile.write("0 ");
+optfile.write(enemygender+"");
+dlgscroll.play();dlg(voice[107]);dlgend.play();
+}

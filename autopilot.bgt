@@ -5,8 +5,8 @@ bool usingblades;
 0 = player is close to pit
 1 = player can move normally
 2 = player is within range of enemy
-4 = player must use evade blade to jump pit and blade
 3 = player is close to blades
+4 = player must use evade blade to jump pit and blade
 5 = player is near boulder
 */
 timer useswordtimer;
@@ -65,7 +65,7 @@ else enemy[x].drop.play();
 }
 if(playerhealth<=0) {
 dieStopSounds();
-iamdead.play_wait();
+dlgplay("sounds/idead.wav", true, false);
 lives--;
 if(lives<=0) {
 sound diecomp;
@@ -76,16 +76,17 @@ while(diecomp.playing) {if(key_pressed(KEY_SPACE)||key_pressed(KEY_RETURN)) {die
 menu();
 }
 if(lives>0) {
-voice.speak_interrupt_wait("you lost a life!");
-voice.speak_wait("level "+level);
-levelDesc();
+dlgscroll.play();dlg(voice[53]);
+dlgplay("sounds/lifeloss/"+random(1,find_files('sounds/lifeloss/*.*').length())+".ogg",true,false);
+dlgscroll.play();dlg(voice[54]+level);
+dlgscroll.play();levelDesc();dlgend.play();
 playerhealth=250;
 playerposition=0;
 initAfterLevels();
 }
 }
 if(playerhealth<=50) usepotion();
-if(key_pressed(KEY_H)) voice.speak_interrupt("Health: "+playerhealth+", armor: "+armor);
+if(key_pressed(KEY_H)) speak(voice[49]+playerhealth +voice[50]+armor);
 if(key_pressed(KEY_ESCAPE)) {
 autopiloting=false;
 break;
@@ -180,7 +181,7 @@ avoiding=false;
 }
 if(playerposition==blades[x].position&&!usingblades) {
 dieStopSounds();
-dieblades.play_wait();
+dlgplay("sounds/dieknife.ogg", true, false);
 lives--;
 if(lives<=0) 
 {
@@ -194,9 +195,10 @@ if(key_pressed(KEY_SPACE)||key_pressed(KEY_RETURN)) conv.stop();
 menu();
 }
 if(lives>0) {
-voice.speak_interrupt_wait("you lost a life!");
-voice.speak_wait("level "+level);
-levelDesc();
+dlgscroll.play();dlg(voice[53]);
+dlgplay("sounds/lifeloss/"+random(1,find_files('sounds/lifeloss/*.*').length())+".ogg",true,false);
+dlgscroll.play();dlg(voice[54]+level);
+dlgscroll.play();levelDesc();dlgend.play();
 playerhealth=250;
 playerposition=0;
 initAfterLevels();

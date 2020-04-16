@@ -320,7 +320,7 @@ breakblade.play();
 if(playerposition==position&&!usingblades) {
 dieStopSounds();
 lives--;
-dieblades.play_wait();
+dlgplay("sounds/dieknife.ogg", true, false);
 if(lives<=0) {
 sound conv;
 conv.load("sounds/bladedie.ogg");
@@ -331,9 +331,10 @@ if(key_pressed(KEY_SPACE)||key_pressed(KEY_RETURN)) conv.stop();
 main();
 }
 if(lives>0) {
-voice.speak_interrupt_wait("you lost a life!");
-voice.speak_wait("level "+level);
-levelDesc();
+dlgscroll.play();dlg(voice[53]);
+dlgplay("sounds/lifeloss/"+random(1,find_files('sounds/lifeloss/*.*').length())+".ogg",true,false);
+dlgscroll.play();dlg(voice[54]+level);
+dlgscroll.play();levelDesc();dlgend.play();
 playerhealth=250;
 playerposition=0;
 initAfterLevels();
