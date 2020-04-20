@@ -1,0 +1,51 @@
+h2. A BattleZone by GameMadnessInteractive fork
+
+This is a fork of a game for blind and visually impaired written in "Blastbay Gaming Toolkit":http://blastbay.com/ scripting language.
+*Note*: There's no graphics, only sound!
+the original version as well as the discussion of the game can be found "here":http://forum.audiogames.net/viewtopic.php?id=3800&p=52.
+Copyright В© the original code and sounds were developed by "Carlos Macintosh":http://twitter.com/KeyWasFull.
+You can find out how to play the game by reading _user guide.txt_ file.
+
+h2. Changes made by Brogar2000 on 04/16/2020
+* Made a data folder and moved a few files to it. Hopefully I can move more files over to it at a later date.
+* Renamed ss.bgt to game.bgt.
+* The level 5 boss works propperly now. I did not make any changes to fix this blitch, it seems to have fixed itself.
+* Sarcastic messages when you get killed have made a come back.
+* Changed some of the sounds, mainly some of the weapon and menu sounds. There are other sounds that have been changed as well.
+* Now using the DFSpeech/DLG method of speaking text. This means that Battle Zone can now be played with Jaws or NVDA once again. DFSpeech was made by http://masonasons.me and found at https://github.com/cartertemm?tab=repositories
+* Took out the old menu system and replaced it with m_pro, made by http://masonasons.me and found at https://github.com/cartertemm?tab=repositories
+* Battle Zone now makes use of dialogues. To scroll through dialogues, just press the enter key.
+* Battle Zone now has support for multiple languages. To make a new language, go into the languages folder. You can use the English file as a template. Remember not to add a file extention to your language file, or else the game will read out .txt at the end of the language name.
+* New language: Spanish, (Google Translated).
+* Readded enter sounds for the menus.
+
+h3. Plans for future:
+* Hopefully we can improve the language system. While it works, it has some major flaws.
+
+h3. Known issues:
+* When generating the cheats.txt file, there are no line breaks. I had to put tabs instead. This is do to how the language system works, so unfortunately nothing can be done about it at the moment.
+* There's a little sound glitch where you hear certain bits of sound right before a level starts. This glitch does not happen all the time, and  it can be mostly noticed when using the next level cheat or beating the first boss and going to the next level. I'm not sure how this happens, so I can't find a way to fix it.
+
+h2. Changes made by Menelion Elensúlë:
+* Removed the @maxarmor@ restriction — no useless armor anymore!
+* Removed the annoying evading blades sound — use the _V_ key more frequently instead
+* Removed annoying life loss messages
+* Removed bombs — they were quite instable
+* Now each ammo pack that you can buy contains 30 ammo, not 10 — I think it's more realistic to pay 30 points per gunshot
+* Now when you get an evade blades, nothing is said — the sound is enough
+* Cheats: _F4+Enter_ gives you extra 250 lives, not just 250
+* Cheats: _Del+Z_ gives you extra 250 armor, not just 250
+* New cheat: press _Ctrl+Shift+I_, and every item gets caught automatically for you
+* A potion now gives more health (between 70 and 120, not between 50 and 100)
+
+h3. Plans for future:
+* SHOP: Allow items selling, not only buying. When being sold, items cost half their original price
+* ITEMS: Change all voice messages to sounds for extra points, lives, boobies etc.
+* Code optimizing and cleaning
+* Implement update manager from 13.4 branch or develop an alternative one
+* Allow armor protection from boulders (you will need really lots of armor for this, and you'll lose lots of armor when hit by a boulder)
+* Maybe make a Russian branch or a bilingual interface
+* Provide a hints.txt file after gaining 50000 points
+
+h3. Known issues:
+* Level 5 is not working: to beat a boss, just press Spacebar. That was so before my intrusion, and for now I don't know how to solve this. Pull requests are welcome.
