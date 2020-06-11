@@ -1,0 +1,185 @@
+Battle Zone readme
+
+the main Menu
+
+Use the arrow keys to move around in the main menu and the enter to select an option. Start game starts a new game (what else?) Load last saved game loads a saved game. Read instructions allows you to read this file from within the game. Change options brings you into the options menu, which has several options in it. Exit lets you get out of battle zone, and back into the boring old real world.
+
+Options menu
+This menu contains 5 options in it:
+change background music: allows you to select from some different music tracks, or select random music (the default). You can also turn the music off completely from here.
+Select gender of enemies: It does exactly waht it says. Choose male, female, or both.
+Select sword sound: This allows you to choose a different sword sound.
+Keyboard mode: This allows you to toggle between desktop and laptop mode.
+Toggle enemy attack taunt sounds: This toggles on or off whether enemies play an additional taunt when they hit you with their weapons.
+Stop all sounds between levels: this is a toggle that does exactly what its name says.
+Save options: This saves all the options so that when you reload the program, the options have all been configured to what they were when you saved them. This option will return you back to the main menu.
+
+Learn game sounds
+During gameplay, Press f3 to get a menu of game sounds, and press enter to hear the sound. You can access this any time during the game. Use it if you don't know what the sound means.
+
+Difficulty levels
+Before you really start the game, you'll be asked to choose your difficulty level. Choose from the levels provided, and play away! You should be able to notice the changes in the enemies and other stuff.
+
+Reality mode
+Reality mode is similar to the survival mode on some games. You only start out with 1 life, and can't get any more by bonus items. However, you have more health, and twice the normal amount of ammo, and booby traps as you do in the normal game. This kind of simulates what it would be like in real life, as much as you can get it here, without the arcade-style luxury of extra lives to keep you going.
+
+How to play
+After listening to or skipping the intro cut scene, you will begin playing in level 1. You move around with the left and right arrow keys. Hold down any of those arrow keys to move continuously in that direction. Press right shift to toggle your status from walking to running and back again
+
+Enemies
+You will hear enemies come at you because they are saying something and making loud stepping noises. This is when you think about using a weapon. Press 1, 2, 3, or 4 to select sword , gun, booby traps, or machine gun, respectively, and press space to fire the weapon. If you are using the sword you must be very close to the enemy in order to hit it. It takes several hits of the sword to take out an enemy, but the sword can hit more than one enemy at once, if they are all in its range. The gun has a chance to miss enemies, but it can take enemies out with one shot. You have 25 ammo in your gun to start, and this can be raised if you get extra ammo. Hold down your spacebar while using the machine gun to fire a continuous stream of bullets both in front and behind you. It takes several bullets to kill an enemy. The drawback is that the machinegun uses the same ammo as your normal gun, and you only get 10 points for killing an enemy with it.
+	When an enemy attacks you he will take a little amount of your health away. You start out with 250 health (500 on reality mode); press h to check your current health. When your health drops below 80, you will hear a quiet coughing sound and your steps might slow down a little. Then, as your health drops even lower, your moving will slow down more and more, and your coughing willl get louder, until you reach 0, when you die.
+
+Moving Boulders
+A special kind of enemy, the moving boulder, will begin to appear after level 2. Boulders roll along the ground toward you. You must jump past them as they roll so as not to be smashed by them. Boulders take off an amazingly large chunk of your health if you are smashed by them, and they will continue to smash at you until you jump out of the way. A player who hasn't gotten any potions and who hasn't gotten hurt by any of the normal enemies will only last two smashes by the boulders, so keep that in mind when you hear the boulder sound. And unlike blades, discussed next, there is no item that gives you impunity from boulders. Boulders can hurt normal enemies sometimes, but not often, because the enemies will jump past the boulders almost all of the time. Note: I have been known to try to jump the boulders, only to be cut by the blades, or fall into the pits. SO be very careful when you are around boulders.
+oh, and boulders can't fall in the pits. They're too big. Sure, they tip dangerously over, but so what. They make it across, and they don't have the ability to jump. The kidnapper made quite sure of that; he's the one who brought you into this nightmare.
+
+Fireballs
+These annoying insindiary nuisances begin appearing a few levels after the boss level. They are difficult to hear, because that is how fire can be if it is correctly made. And these fireballs have been tampered with to destroy any living matter at their altitude or higher. Unfortunately for you, the boss's hired helps aren't tall enough to be hurt by the spikes or these fireballs, so they are for you and you alone. When you hear one coming towards you, press your down arrow to duck. You will stay ducked until your back starts hurting and you just need to stand back up, which is about two seconds after you duck. Make sure you time it right. If you duck too late, you get some nice burns on your face, and if you duck too early you could stand up to find your hair in flames. While you are ducked, you can only fire the weapon you are using right now. You can't move, and if an item falls, you daren't come up to try and catch it for fear of some nasty burns. YOu also can't switch weapons. Fireballs take a good amount of your health away, about a third as much health as the boulders take. If you jump while you are ducked, 400 points will be deducted from your score as a penalty, but this can be used to jump over boulders and avoid the fireballs.
+
+Teleportation
+Starting at level 6 enemies can appear out of nowhere. You will have a quick warning just before it happens, and then, you will need to fight all of them off. Have fun.
+
+Booby traps
+If you select booby traps and press space to set one, a booby trap will be placed two positions to the right of your current position. Any enemy that walks over a booby trap is destroyed--along with the trap itself. This means that a trap will only destroy 1 enemy before it becomes useless. You start out with 5 booby traps and can get more by bonus items. Use these if you are facing a very annoying foe or he keeps dodgin your bullets, or if you don't have enough health or potions to use the sword. Be warned however: these can kill you if you step on them. Jump instead, and you will be okay. You can press B to hear how many booby traps you currently have. Note that boulders cannot be destroyed by booby traps.
+
+Bombs
+These bombs will destroy 20 enemies on a level when you fire one. Unfortunately you can only buy them in the shop, and they cost a wallet lightening 10000 points each. Press 5 to switch to bombs--if you have them. Press space to fire. YOu will hear a bunch of enemies dying. Unfortunately for you, you probably didn't kill all of the enemies. If you have no more bombs left, you will automatically witch back to using your sword. Note: if you have no bombs, pressing 5 will do nothing. Press m to check how many bombs you have. You can't use bombs while items are falling or during the boss level of course.
+
+Police cars
+Police cars are one of the most annoying things to deal with in the game. The police cars go on a patrol route: they have a small space in which they patrol and will go up and down the area, reversing direction when the boundary of the patrol is reached.
+When you hear the tell-tale sirens getting closer to you, duck, or otherwise they could shoot you! They never miss. If you hear yourself grunt, then you know you got hit by their armor-piercing shells. You heard right--armor piercing shells ignore armor. Police cars can run you over (not implemented yet), so you may have to lose 400 points by humping while you are ducked so as to not get crushed by them. Armor piercing shells take off between 15 and 30 health, so don't let them shoot you!
+
+Hazards
+pits. pits can be dangerous, especially when there are two pits side by side or very close to each other that you have to jump over. TO jump, press your up arrow key, and press the right arrow key as quickly as you can. You have one second to jump, and every time you press the right arrow key, you move one space to the right. The same holds true for jumping left, excpet that you use your left arrow key. If you fall down the pit, you lose a life.
+Blades. Unlike pits, these come on and off periodically, but always at the same interval. Run past them to stay alive. Don't try jumping over them. The blades are low enough that if you go up into the air the blades will slice through your head even if they are off. You can use an evade blades item with e to allow the item to be cut up instead of you though, if you feel like there is no way to avoid the blades, or if you just don't feel like trying for some reason. Note that since the blades cut off the protection, the protection stays on only for the first blade that it touches.
+
+Items
+Items will be heard periodically from your left, center or right. If you hear an item sound on the left, press the f1 key. If you hear it in the center press f6, and if on the right, f12. If you aren't fast enough, the item shatters to earth. These are the desktop keys.
+The laptop keys are similar. If you hear an item on your left press the tab key. If you hear an item on your center, press y. If you hear it on your right, use the backslash key which is right above enter in most cases.
+If you press the correct key you will be told what you gained. There are 7 item types as of now. 
+Potion: gives you a potion in reserve to use. Press p to use a potion. Potions can give you between 50 and 100 health back if you've been being toyed with by enemies. If you need to know how many potions you have press control+p.
+Ammo: gives you extra ammo for your gun. You'll get 15 on Boring blast, 20 on medium, 25 on advanced, and 30 on I just wanna die now.
+Extra points: Gives you, well, uh, extra points? You get 100 on Boring Blast, 125 on medium, 150 on advanced and 175 on I just wanna die now difficulty.
+Evade blades: This will give you an inventory item of blades protection. If you use this, you will hear the evade blades sound, and if you are cut by a blade or jump over one while you are using it (press e to use it), the item will be cut up instead of you. However, this of course means that the item only works once before it is useless and falls off.
+Extra booby traps: It gives you extra booby traps to blast away enemies. You get 3 on boring blast, 7 on medium, 11 on advanced, and 15 on I just wanna die now.
+Armor: Armor can help absorb the damage that enemies do to you. Once you receive armor, your armor rating goes up. THis can really help you with the normal enemies and can also be an aid in fighting off the boss. Unfortunately, though the armor will protect you a tiny bit against boulders ... well ... unless you have a whooooole lot of it, you won't be too safe from those. And normally you can only have up to 22 armor on boring blast, 25 on medium, 27 on advanced or 30 armor on I just wanna die now.
+Extra life: It gives you an extra life. This item isn't available in reality mode.
+Fake item: It could've been something nice, but the boss decides that he doesn't like what you got, so he smashes it.
+
+Lives
+You start the game with 3 lives (1 on reality mode). When an enemy kills you, you fall into a pit, you get cut by a blade, or you step on one of your own booby traps, you lose one of your lives. You will restart the level with full health. You can gain extra lives, if you are lucky, when an item falls.
+
+Levels
+Every level you complete, you will be moved into the next level. Just before, you will hear how many time bonus points you got. You start with a base time bonus score of 300, plus 15 points times your current level. So if you were playing on level 4 you would have 360 time bonus points. Every second you lose 1 point. So if you ended level 4 in 60 seconds, your score would be 300, which is an awful good time bonus for that level.
+Notice that your step sound and the level ambience changes as the new levels start. There are also more enemies and pits that you need to worry about. Currently there are 9 normal levels in the game plus 2 boss levels.
+
+The first boss
+This boss is just like a normal enemy on steroids. The only weapon he is vulnerable to is your sword; he took your gun away and is using it to hurt you. To kill him, get in some cheap shots, then jump out of the way before he starts shooting. Enjoy!
+
+The second boss
+The second boss is a lot harder than the first one. He's a pyromaniac, and, as a result, loves to throw fireballs at you. Your machinegun is the only weapon you can use in this level, and as a result, you are switched to it automatically when you start level 10. Note: the boss has tampered with your machine gun, so it fires a lot slower, but you don't want to fire quickly anyway. WHen you start, you are plopped onto a completely empty game board with you at position 0 and the boss at position 80. Every 10 or so seconds, the boss will yell "take this", and will throw a fireball from his position on the game screen. Your job is to run into range with your machinegun and shoot at the boss. Fireballs only move one way, to the left. As a result, the boss, knowing this, has set up a large electrical force shield that moves along with him, that stops you from going past him. If you run into the forcefield, you lose a life, and you have to start all over again from the beginning of the boss level.
+	Note also that holding down your down arrow key keeps you ducked for as long as the key is down, and you become unducked when you release the key.
+	When you shoot him, things will get harder. The boss will retreat pretty far away, bringing the forcefield with him. Run back into range, ducking fireballs as they come, and shoot him again. Note: the boss fires fireballs faster, and the fireballs he fires speeds up, as you take more of his health away. Have a good time, and don't get hurt by the fireballs. They take off 200 health, and if you lose all of your health from them, you will lose 3 lives instead of one. Have a fun time--and good luck! You can use your pageup and pagedown keys to adjust your background music. 
+
+The shop
+The shop is only available after you get to level 4. To open up the shop, press control+s. You will hear the shopkeeper saying some junk about welcome to the shop, and you can use your up and down arrow keys to navigate the shop menu to find something you might want to buy. The prices are also listed. The monetary value in battle zone is the player's points. Note that you cannot spend points that you are collecting during the level. You can only spend points that are safely stored from collecting in other levels. For instance, if you were playing in level 4, and you had 3000 total points, 500 of them being gained in level 4, you would be able to spend 2500 points.
+After selecting some item you want to buy, the shopkeeper will ask you how  many of the item you want. Press a number from 1 to 10 on your numbers row, 0 being 10 of the item. The shopkeeper will calculate how much it costs, and he will tell you. NOte: he's never wrong; he won't cheat you. If you like the price, press y to buy the items. If you don't press n. you will be returned to the game right where you left off, with a lighter wallet of points but a greater supply of whatever you bought. Note: you can't access the shop while an item is falling or during the boss level.
+
+Saving the game
+To save the game, press alt+s, and just keep playing. A load game option is in the main menu, and you can use it to reload the game. For now, the level you have just played on is saved, and when you reload you will be started back at the beginning of the level. The layout is different though. Coming up will be much more precise saves which save all the enemies and hazards as they are.
+
+points system
+The points system in the game works like this:
+Enemy is killed with gun: 45 points on boring blast
+54 on medium
+63 on advanced
+72 on i just wanna die
+Enemy is killed with sword: 75 points on boring blast
+90 on medium
+105 on advanced
+120 on i just wanna die now
+Enemy is killed with booby trap: 50 points on boring blast
+60 on medium
+70 on advanced
+80 on i just wanna die now
+enemy is killed with machine gun: 10 points
+Enemy is killed with bomb: 0 points (too easy to get points)
+Enemy falls into pit or dies by being hit by rock/cyclist: 20 points
+Catch an item: 50 points on boring blast
+75 on medium
+100 on advanced
+120 on i just wanna die now
+Extra points (from item): 100 points, not including the item catch bonus
+Complete level: 200 points times the level you just finished (boring blast
+240 points times the level on medium
+280 times the level you finished on advanced
+320 times the level you finished, on i just wanna die now.
+Kill boss 1: 5000 points on boring blast
+6000 on medium
+7000 on advanced
+8000 on I just wanna die now
+Kill boss 2: 7000 points for all difficulties
+Press pageUp and pageDown to change the background music volume. Either your number pad or your six pack will work.
+
+pausing/unpausing
+Let's say that you have something else to do. Your mom is calling you to clean your room, the fire alarm is beeping furiously in your house, or perhaps your dog is just barking uproariously and you need to take his leash and run him out to the fence so it can annoy someone else for a while. In these times you don't want to gain a huge negative time bonus score, do you?
+I didn't think so. If you press F8, you'll hear some nice quiet music playing, and you can do whatever, whether that be throwing shirts and pants haphazardly under your bed, turning off the annoying smoke detector (and maybe even taking out the batteries), or kicking the dog a few times before taking it out and giving it a sound lecture on what you had just been doing ("I was playing this game called Battle zone! And you were interrupting me! As punishment you will stay here! Forever!) and when you get back from those kinds of duties you'll find that you can press f8 and continue as if nothing happened. Everything pauses. Your time is saved. You can use any of the status keys in the pause mode, in case you need to check your inventory.
+
+Full command reference
+This is a full command summary for the game. Be prepared.
+Move right: right arrow key
+Move left: left arrow key
+Jump: up arrow, followed by the arrow key in which you want to jump, till you land.
+Duck: down arrow key
+ Fire weapon: spacebar
+Switch to sword: 1
+Switch to gun: 2
+Switch to booby traps: 3
+Switch to machine gun: 4
+Switch to bombs if you have them: 5
+Open up the shop: control+s
+Use potion: p
+Open up learn game sounds: f3
+Exit the game and return to the main menu: escape then y
+Music up/down: page up and page down
+background ambience up/down: home/end
+Use evade blades item: e
+Skip cut scenes: enter
+Pause the game: f8
+Save the game: alt+s
+
+Status keys
+The following keys can be used to check certain things about yourself in the game:
+Ammo in your gun: A
+Number of booby traps you have: B
+Number of evade blades items you have: control+e
+Health and armor: H
+lives you have: l
+Potions you have: control+p
+Level score: s
+Total score: T
+Whether you are using an evade blades item: v
+
+
+How to gain the cheats
+If you gain over 20000 points in the game, when you finish the level, you'll get cheats!
+
+level names, for those of you who have quiet synthesizers:
+level 1, getting out of the lab
+level 2, scenes from city life
+level 3, the water of death
+level 4, street knowhow
+level 5, boss 1
+level 6, forest excursions
+level 7, rumbles in the dark
+level 8, a winter wonderland ... full of enemies
+level 9, the Vile river (the largest river on earth!)
+level 10, boss 2
+level 11, Cave of violence
+level 12: danger on the road
+level 13: caught in the storm
+
+Autopilot
+This feature is still in progress. In the autopilot mode, you can't do anything. BUt you can watch the computer player try to play a game of battle zone. To activate the autopilot, press left shift+right alt+space bar, in that order. You will lose control of the game until you press escape to turn this off. Just check it out; it's pretty cool.
+Now, close this file, and check the game out!

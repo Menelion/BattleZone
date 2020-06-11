@@ -1,0 +1,31 @@
+void learngamesounds() {
+learn_game_sounds lgs;
+lgs.speak_values=false;
+lgs.allow_escape=true;
+lgs.wrap=true;
+lgs.add_item(voice[110],"sounds/item.wav");
+lgs.add_item(voice[111],"sounds/break.wav");
+lgs.add_item(voice[112],"sounds/ammo.wav");
+lgs.add_item(voice[113],"sounds/storepotion.wav");
+lgs.add_item(voice[114],"sounds/grabarmor.ogg");
+lgs.add_item(voice[115],"sounds/evadeGet.wav");
+lgs.add_item(voice[116],"sounds/fake.wav");
+lgs.add_item(voice[117],"sounds/pit.wav");
+lgs.add_item(voice[118],"sounds/enemy/jump.wav");
+lgs.add_item(voice[119],"sounds/enemy/diepit1.sound");
+lgs.add_item(voice[120],"sounds/booby.wav");
+lgs.add_item(voice[121],"sounds/enemytrap.wav");
+lgs.add_item(voice[122],"sounds/oopsy.wav");
+lgs.add_item(voice[123],"sounds/blades.wav");
+lgs.add_item(voice[124],"sounds/dieknife.ogg");
+lgs.add_item(voice[125],"sounds/bladeoff.wav");
+lgs.add_item(voice[126],"sounds/rock.wav");
+lgs.add_item(voice[127],"sounds/enemy/boulderHit.wav");
+lgs.add_item(voice[128],"sounds/boulderHit.wav");
+lgs.add_item(voice[129],"sounds/enemy/hitarmor/1.ogg");
+lgs.add_item(voice[130],"sounds/fireBall.wav");
+lgs.add_item(voice[131],"sounds/firehit.wav");
+lgs.add_item(voice[132],"sounds/coughing.wav");
+lgs.add_item(voice[133],"sounds/endoflevel.wav");
+lgs.run(voice[134]);
+}

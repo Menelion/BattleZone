@@ -1,0 +1,511 @@
+class enem {
+sound voice;
+int gender;
+sound armorhit;
+int dieseq;
+sound drop;
+int posdie;
+sound dropwater;
+sound step;
+int hasGottenHit;
+bool abovePlayer;
+bool attackedByCop;
+int voicenum;
+int slotvoice;
+timer movetimer;
+timer jumptimer;
+bool isDead;
+bool canBeDamaged;
+int hurtnum;
+int weapon;
+bool shouldPlayStep;
+sound hitboulder;
+sound diesound;
+sound hitplayer;
+sound diepit;
+sound fire;
+sound gethurt;
+sound_pool hurt;
+sound jumpsound;
+int pos;
+int speed;
+int health;
+int strength;
+~enem() {
+voice.stop();
+pos=-500000;
+}
+enem() {
+if(enemygender==3) {gender=random(1,2);}
+else {gender=enemygender;}
+dieseq=0;
+hasGottenHit=0;
+hitboulder.load("sounds/enemy/boulderHit.wav");
+attackedByCop=false;
+weapon=random(1,4);
+}
+enem(int init_speed, int init_strength, int init_pos, int init_health, string voicefile) {
+speed=init_speed;
+strength=init_strength;
+pos=init_pos;
+health=init_health;
+canBeDamaged=true;
+}
+void moveControl(int whichdir) {
+if(movetimer.elapsed>=speed) {
+sounds.update_sound_1d(slotvoice,pos);
+movetimer.restart();
+if(whichdir==1) {
+pos--;}
+if(whichdir==2) pos++;
+if(shouldPlayStep) {
+step.load("sounds/enemystep/lvl"+level+"/"+random(1,3)+".wav");
+	position_sound_1d(step,playerposition,pos,4,2);
+step.play();
+}
+positions();
+if(pos==playerposition||pos==playerposition-1||pos==playerposition+1) {
+if(!abovePlayer) {
+if(jumping) {
+int rand=random(1,25);
+if(rand==1) attack();
+}
+if(!jumping) {
+attack();
+}
+}
+if(abovePlayer&&!ducked) attack();
+}
+if(pos==boobyposition&&canBeDamaged&&boobyposition!=-1) {
+sounds.play_1d("sounds/enemytrap.wav",playerposition,pos,false);
+boobysound.stop();
+if(strength>20) {if(speed==344) {
+health-=5;
+bgrunt.load("sounds/bgrunt"+random(1,2)+".wav");
+bgrunt.stop();
+bgrunt.pitch=random(96,103);
+bgrunt.play();
+}
+if(speed!=344) die();
+levelpoints+=50;
+}
+boobyposition=-1;
+if(strength<=20) die();
+positions();
+}
+if(canBeDamaged) {
+for(uint x=0; x<boulder.length(); x++) {
+if(pos==boulder[x].pos+1) {
+int r=random(1,4+(3*(gameDiff-1)));
+if(r==1) move();
+if(r>=2) jump(1);
+}}
+for(uint x=0; x<pit.length(); x++) {
+if(pos==pit[x].position+2) {
+int r=random(1,4+(3*(gameDiff-1)));
+if(r==1) move();
+if(r>=2) if(whichdir==1) jump(1);
+}
+if(pos==pit[x].position-2) {
+int r=random(1,4+(3*(gameDiff-1)));
+if(r==1) move();
+if(r>=2) {
+if(whichdir==2) jump(2);}
+}
+if((pos==pit[x].position||pos==pit[x].position+1)) {diepit.play();
+isAttacking=false;
+position_sound_1d(diepit,playerposition,pos,4,3);
+posdie=pos;
+levelpoints+=20;
+sounds.destroy_sound(slotvoice);
+pos=-150000;
+}}}}}
+void move() {
+if(playerposition<pos) {
+moveControl(1);
+}
+if(playerposition>pos) moveControl(2);
+if(movetimer.elapsed>=speed) {movetimer.restart(); 
+if(pos==playerposition||pos==playerposition+1||pos==playerposition-1) {
+if(!abovePlayer) {
+if(jumping) {
+int rand=random(1,200);
+if(rand==1) attack();
+if(rand!=1) return;
+}
+if(!jumping) {
+attack();
+}
+}
+}}}
+void attack() {
+fire.stop();
+fire.play();
+position_sound_1d(hitplayer,playerposition,pos,4,0.1);
+if(armor>=strength) {
+armorhit.load("sounds/enemy/hitarmor/"+random(1,10)+".ogg");
+armorhit.play();
+}
+if(armor<strength) {playerhealth-=(strength-armor);hitplayer.stop();
+hitplayer.play();
+}
+if(canBeDamaged) retreat();
+}
+void retreat(int howmuch) {
+if(pos>playerposition) {
+pos+=howmuch;
+for(uint x=0; x<pit.length(); x++) {
+if(pos==pit[x].position+2) {
+int r=random(1,4+(3*(gameDiff-1)));
+if(r==1) move();
+if(r>=2) {if(pos>playerposition) jump(1);
+if(pos<playerposition) jump(2);}
+}
+if(pos==pit[x].position-2) {
+int r=random(1,4+(3*(gameDiff-1)));
+if(r==1) move();
+if(r>=2) {if(pos>pit[x].position) jump(1);
+if(pos<pit[x].position) jump(2);}
+}
+if(canBeDamaged) {
+if(pos==pit[x].position||pos==pit[x].position+1||pos==pit[x].position-1) {diepit.play();
+isAttacking=false;
+position_sound_1d(diepit,playerposition,pos,4,3);
+levelpoints+=20;
+sounds.destroy_sound(slotvoice);
+pos=-150000;
+}}}
+}
+if(pos<playerposition) {
+
+pos-=howmuch;
+for(uint x=0; x<pit.length(); x++) {
+if(pos==pit[x].position+2) {
+int r=random(1,4+(3*(gameDiff-1)));
+if(r==1) move();
+if(r>=2) {if(pos>playerposition) jump(1);
+if(pos<playerposition) jump(2);}
+}
+if(pos==pit[x].position-2) {
+int r=random(1,4+(3*(gameDiff-1)));
+if(r==1) move();
+if(r>=2) {if(pos>playerposition) jump(1);
+if(pos<playerposition) jump(2);}
+}
+if(canBeDamaged) {
+if(pos==pit[x].position||pos==pit[x].position+1) {diepit.play();
+isAttacking=false;
+position_sound_1d(diepit,playerposition,pos,4,3);
+levelpoints+=20;
+sounds.destroy_sound(slotvoice);
+pos=-150000;
+}}}
+}
+if(pos==playerposition) {int r=random(1,2);
+if(r==1) pos-=2;
+if(r==2) pos+=2;}
+
+}
+void retreat() {
+if(pos>playerposition) {
+for(int x=0; x<random(3,5); x++)
+{moveControl(1);
+}
+for(uint x=0; x<pit.length(); x++) {
+if(pos==pit[x].position+2) {
+int r=random(1,4+(3*(gameDiff-1)));
+if(r==1) move();
+if(r>=2) {if(pos>playerposition) jump(1);
+if(pos<playerposition) jump(2);}
+}
+if(pos==pit[x].position-2) {
+int r=random(1,4+(3*(gameDiff-1)));
+if(r==1) move();
+if(r>=2) {if(pos>pit[x].position) jump(1);
+if(pos<pit[x].position) jump(2);}
+}
+if(canBeDamaged) {
+if(pos==pit[x].position||pos==pit[x].position+1||pos==pit[x].position-1) {diepit.play();
+isAttacking=false;
+position_sound_1d(diepit,playerposition,pos,4,3);
+levelpoints+=20;
+sounds.destroy_sound(slotvoice);
+pos=-150000;
+}}}
+}
+if(pos<playerposition) {
+for(int x=0; x<2; x++)
+{moveControl(2);
+for(uint x=0; x<pit.length(); x++) {
+if(pos==pit[x].position+2) {
+int r=random(1,4+(3*(gameDiff-1)));
+if(r==1) move();
+if(r>=2) {if(pos>playerposition) jump(1);
+if(pos<playerposition) jump(2);}
+}
+if(pos==pit[x].position-2) {
+int r=random(1,4+(3*(gameDiff-1)));
+if(r==1) move();
+if(r>=2) {if(pos>playerposition) jump(1);
+if(pos<playerposition) jump(2);}
+}
+if(canBeDamaged) {
+if(pos==pit[x].position||pos==pit[x].position+1) {diepit.play();
+isAttacking=false;
+position_sound_1d(diepit,playerposition,pos,4,3);
+levelpoints+=20;
+sounds.destroy_sound(slotvoice);
+pos=-150000;
+}}}
+}}
+if(pos==playerposition) {int r=random(1,2);
+if(r==1) pos-=2;
+if(r==2) pos+=2;}
+}
+void die() {
+isDead=true;
+diesound.pitch=random(97,102);
+diesound.play();
+dieseq=1;
+position_sound_1d(drop,playerposition,pos,4,0.1);
+position_sound_1d(dropwater,playerposition,pos,4,2);
+position_sound_1d(diesound,playerposition,pos,4,0.1);
+posdie=pos;
+sounds.destroy_sound(slotvoice);
+voice.stop();
+pos=-500;
+isAttacking=false;
+if(autopiloting) wait(random(400,500));
+}
+void jump(int whichway) {
+position_sound_1d(jumpsound,playerposition,pos,4,1);
+jumpsound.play();
+if(whichway==1) pos-=4;
+if(whichway==2) pos+=5;
+}
+}
+class hazard {
+int on_interval;
+timer interval;
+bool isOn;
+bool is_constant;
+int position;
+sound whereitis;
+~hazard() {
+whereitis.stop();
+}
+void reset(int pos, bool constant, bool playLooped, string filename) {
+whereitis.load(filename);
+if(!whereitis.active) alert("couldn't find the file","We couldn't find the file "+filename);
+if(playLooped) whereitis.play_looped();
+position=pos;
+is_constant=constant;
+if(is_constant) isOn=true;
+}
+void workIt() {
+bool usingblades;
+if(interval.elapsed>=on_interval) {
+interval.restart();
+if(!chavoid) {
+if(avoiding) usingblades=true;
+if(!avoiding) usingblades=false;
+}
+positions();
+whereitis.play();
+if(playerposition==position&&usingblades&&!chavoid) {
+avoiding=false;
+breakblade.stream("sounds/bladeoff.wav");
+breakblade.play();
+}
+if(playerposition==position&&!usingblades) {
+dieStopSounds();
+lives--;
+dlgplay("sounds/dieknife.ogg", true, false);
+if(lives<=0) {
+sound conv;
+conv.load("sounds/bladedie.ogg");
+conv.play();
+while(conv.playing) {
+if(key_pressed(KEY_SPACE)||key_pressed(KEY_RETURN)) conv.stop();
+}
+main();
+}
+if(lives>0) {
+dlgscroll.play();dlg(voice[53]);
+dlgplay("sounds/lifeloss/"+random(1,find_files('sounds/lifeloss/*.*').length())+".ogg",true,false);
+dlgscroll.play();dlg(voice[54]+level);
+dlgscroll.play();levelDesc();dlgend.play();
+playerhealth=250;
+playerposition=0;
+initAfterLevels();
+}
+}}
+}}
+class movable_hazard {
+sound voice;
+sound step;
+timer movetimer;
+timer jumptimer;
+bool canBeDamaged;
+bool shouldPlayStep;
+bool abovePlayer;
+sound hitplayer;
+sound diepit;
+sound fire;
+sound gethurt;
+sound jumpsound;
+int pos;
+int speed;
+int health;
+int strength;
+~movable_hazard() {
+voice.stop();
+pos=-500000;
+}
+movable_hazard() {
+abovePlayer=false;
+}
+movable_hazard(int init_speed, int init_strength, int init_pos, int init_health, string voicefile) {
+speed=init_speed;
+strength=init_strength;
+pos=init_pos;
+health=init_health;
+voice.load(voicefile);
+canBeDamaged=true;
+}
+void moveControl(int whichdir) {
+if(movetimer.elapsed>=speed) {
+movetimer.restart();
+if(whichdir==1) {
+pos--;}
+if(whichdir==2) pos++;
+if(shouldPlayStep) {
+step.load("sounds/enemystep/lvl"+level+"/"+random(1,3)+".wav");
+	position_sound_1d(step,playerposition,pos,4,2);
+step.play();
+}
+positions();
+if(pos==playerposition||pos==playerposition-1||pos==playerposition+1) {
+if(!abovePlayer&&!jumping) attack();
+if(abovePlayer&&!ducked) attack();
+}
+for(uint x=0; x<enemy.length(); x++) {
+if(pos==enemy[x].pos&&!abovePlayer&&enemy[x].hasGottenHit<3) {
+position_sound_1d(enemy[x].hitboulder,playerposition,enemy[x].pos,4,2);
+position_sound_1d(enemy[x].gethurt,playerposition,enemy[x].pos,4,2);
+enemy[x].hitboulder.stop();
+enemy[x].hitboulder.play();
+enemy[x].gethurt.stop();
+enemy[x].gethurt.play();
+enemy[x].health-=random(5,9);
+if(enemy[x].health<=0) {enemy[x].die();
+playerpoints+=20;
+}
+enemy[x].hasGottenHit++;
+}}
+}}
+void move() {
+if(playerposition<pos) {
+moveControl(1);
+}
+if(playerposition>pos) moveControl(2);
+if(movetimer.elapsed>=speed) {movetimer.restart(); 
+if(playerposition==pos) attack();
+}}
+void attack() {
+fire.stop();
+fire.play();
+hitplayer.stop();
+hitplayer.play();
+position_sound_1d(hitplayer,playerposition,pos,4,0.1);
+playerhealth-=(strength-armor);
+}
+void retreat() {
+if(pos>playerposition) {
+for(int x=0; x<random(3,5); x++)
+{
+moveControl(1);
+}}
+if(pos<playerposition) {
+for(int x=0; x<random(3,5); x++)
+{moveControl(2);
+}}
+if(pos==playerposition) {int r=random(1,2);
+if(r==1) pos-=2;
+if(r==2) pos+=2;}
+}
+}
+class neuter {
+int weaponrange;
+sound voice;
+int strength;
+sound_pool weaponfire;
+int patrollength;
+int speed;
+int midpatrol;
+bool moveDirectionRight;
+int pos;
+timer movetimer;
+neuter() {
+moveDirectionRight=true;
+}
+void move(int direction) {
+if(movetimer.elapsed>=speed) {
+movetimer.restart();
+if(direction==1) pos++;
+if(direction==2) pos--;
+checkAttack();
+}
+positions();
+}
+void patrolMove() {
+if(moveDirectionRight) {
+move(1);
+}
+if(!moveDirectionRight) {
+move(2);
+}
+if(pos==midpatrol+patrollength) {
+moveDirectionRight=false;
+}
+if(pos==midpatrol-patrollength) {
+moveDirectionRight=true;
+}
+}
+void checkAttack() {
+for(uint x=0; x<enemy.length(); x++) {
+if(pos>=enemy[x].pos-weaponrange&&pos<enemy[x].pos+weaponrange) {
+if(!enemy[x].attackedByCop) {attackEnemy(x);
+break;
+}
+if(enemy[x].attackedByCop) continue;
+}}
+if((pos>=playerposition-weaponrange&&pos<playerposition+weaponrange)&&!ducked) {
+int rand=random(1,5);
+if(rand==1||rand==2) attackPlayer();
+}
+}
+void attackEnemy(int num) {
+weaponfire.pan_step=4;
+weaponfire.volume_step=3;
+weaponfire.play_1d("sounds/police/fire.wav",playerposition,pos,false);
+enemy[num].gethurt.play();
+position_sound_1d(enemy[num].gethurt,playerposition,enemy[num].pos,4,3);
+int rand=random(1,5+(gameDiff*2));
+if(rand==1) enemy[num].move();
+if(rand>=2) {
+if(enemy[num].pos>pos) enemy[num].jump(2);
+if(enemy[num].pos<pos) enemy[num].jump(1);
+}
+enemy[num].health-=random(5,10);
+if(enemy[num].health<=0) enemy[num].die();
+}
+void attackPlayer() {
+weaponfire.pan_step=4;
+weaponfire.volume_step=3;
+weaponfire.play_1d("sounds/police/fire.wav",playerposition,pos,false);
+playerhealth-=random(15,30);
+playershot.stop();
+playershot.play();
+}
+}
